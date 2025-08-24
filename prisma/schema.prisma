@@ -53,6 +53,21 @@ type File {
   fileSize Int     // size in KB or Bytes
 }
 
+/// ---------------- TOP REVIEWS ----------------
+
+model TopReview {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  reviewID   String   @unique                         // 🔑 reference to Review.reviewID
+  createdAt  DateTime                                // copied from Review.createdAt
+  ratingStar Int                                     // store for ranking
+  name       String                                  // reviewer name (required)
+  comment    String                                  // review text (required)
+
+  @@index([createdAt], map: "idx_topreview_createdAt") // fast recent queries
+}
+
+
+
 /// ---------------- SUGGESTIONS ----------------
 
 /// Main Suggestion model
