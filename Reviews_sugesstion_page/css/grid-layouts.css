@@ -1,0 +1,13 @@
+/* Grid Layout Styles */
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.suggestions-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}

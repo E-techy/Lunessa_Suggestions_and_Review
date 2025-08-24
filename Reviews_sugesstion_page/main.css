@@ -1,0 +1,16 @@
+/* Main CSS File - Imports all modular CSS files */
+
+/* Import all CSS modules in order */
+@import url('css/reset-and-base.css');
+@import url('css/animations.css');
+@import url('css/header.css');
+@import url('css/tabs.css');
+@import url('css/forms.css');
+@import url('css/buttons.css');
+@import url('css/sidebar.css');
+@import url('css/charts.css');
+@import url('css/grid-layouts.css');
+@import url('css/responsive.css');
+
+/* Add Google Fonts import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
