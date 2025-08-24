@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Customer Service Platform - Professional Feedback Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+    <!-- Separated JavaScript Modules -->
+    <script src="utils/notifications.js" defer></script>
+    <script src="utils/rating.js" defer></script>
+    <script src="utils/fileUpload.js" defer></script>
+    <script src="utils/forms.js" defer></script>
+    <script src="utils/tabs.js" defer></script>
+    <script src="utils/animations.js" defer></script>
+    <script src="utils/main.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-badge">
+                    <i class="fas fa-robot"></i>
+                    AI-Powered Customer Service
+                </div>
+                <h1>Professional Feedback Portal</h1>
+                <p class="header-subtitle">
+                    Enterprise-grade customer service platform with intelligent feedback processing and advanced analytics. Your input drives continuous improvement in our AI service delivery.
+                </p>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tab-navigation">
+                <button class="tab-button active" onclick="switchTab('reviews')">
+                    <i class="fas fa-star"></i>
+                    Customer Reviews
+                </button>
+                <button class="tab-button" onclick="switchTab('suggestions')">
+                    <i class="fas fa-lightbulb"></i>
+                    Suggestions & Issues
+                </button>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div id="reviews" class="tab-content active">
+                
+                    <h2><i class="fas fa-star"></i> Customer Reviews</h2>
+                    <div class="metric-cards">
+                        <div class="metric-card">
+                            <i class="fas fa-star" style="font-size: 24px; color: #FFD700;"></i>
+                            <div class="metric-value">4.8</div>
+                            <div class="metric-label">Average Rating</div>
+                        </div>
+                        <div class="metric-card">
+                            <i class="fas fa-comments" style="font-size: 24px; color: var(--accent);"></i>
+                            <div class="metric-value">327</div>
+                            <div class="metric-label">Total Reviews</div>
+                        </div>
+                        <div class="metric-card">
+                            <i class="fas fa-thumbs-up" style="font-size: 24px; color: var(--success);"></i>
+                            <div class="metric-value">94%</div>
+                            <div class="metric-label">Positive Reviews</div>
+                        </div>
+                    </div>
+
+
+                <div class="reviews-container">
+                    <div class="main-content">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-edit"></i>
+                                Submit Professional Review
+                            </h3>
+                            <form class="form-grid" onsubmit="submitReview(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Detailed Review</label>
+                                    <textarea class="form-textarea" placeholder="Please provide a comprehensive assessment of your experience with our AI customer service platform..." required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Service Rating</label>
+                                    <div class="rating-group" id="reviewRating">
+                                        <span class="star" data-rating="1">★</span>
+                                        <span class="star" data-rating="2">★</span>
+                                        <span class="star" data-rating="3">★</span>
+                                        <span class="star" data-rating="4">★</span>
+                                        <span class="star" data-rating="5">★</span>
+                                        <span class="rating-label">Select your rating</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Supporting Documentation</label>
+                                    <input type="file" id="reviewFile" class="file-input" accept="image/*,.pdf,.doc,.docx" multiple>
+                                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('reviewFile').click()">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        Upload Files
+                                    </button>
+                                    <div class="upload-subtext" style="margin-top: 8px;">
+                                        Accepted formats: Images, PDF, Word documents (Max 10MB each)
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 24px;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Submit Review
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="sidebar">
+                        <div class="sidebar-section">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-trophy"></i>
+                                Top-Rated Reviews
+                            </h4>
+                            <div class="review-item">
+                                <div class="review-author">Sarah Mitchell, VP Operations</div>
+                                <div class="review-rating-small">
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                </div>
+                                <div class="review-preview">Exceptional AI service delivery with 99.9% accuracy rate. The natural language processing capabilities exceeded our enterprise requirements...</div>
+                            </div>
+                            <div class="review-item">
+                                <div class="review-author">Michael Chen, CTO</div>
+                                <div class="review-rating-small">
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                </div>
+                                <div class="review-preview">Outstanding integration capabilities and API performance. The AI agent handles complex technical queries with remarkable precision...</div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-clock"></i>
+                                Recent Feedback
+                            </h4>
+                            <div class="review-item">
+                                <div class="review-author">Emily Rodriguez, Customer Success</div>
+                                <div class="review-rating-small">
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                                <div class="review-preview">Professional service with room for improvement in multilingual support. Overall performance meets enterprise standards...</div>
+                            </div>
+                            <div class="review-item">
+                                <div class="review-author">David Thompson, IT Director</div>
+                                <div class="review-rating-small">
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                    <span class="star active">★</span>
+                                </div>
+                                <div class="review-preview">Cutting-edge AI technology with seamless enterprise integration. The response time and accuracy metrics are industry-leading...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions/Errors Tab -->
+            <div id="suggestions" class="tab-content">
+                <div class="suggestions-grid">
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-bug"></i>
+                            Issue Reporting & Suggestions
+                        </h3>
+                        <form class="form-grid" onsubmit="submitSuggestion(event)">
+                            <div class="form-group">
+                                <label class="form-label">Issue Category</label>
+                                <select class="form-select" required>
+                                    <option value="">Select issue type</option>
+                                    <option value="critical-bug">Critical System Bug</option>
+                                    <option value="ui-ux">User Interface/Experience</option>
+                                    <option value="performance">Performance Optimization</option>
+                                    <option value="api-integration">API Integration</option>
+                                    <option value="security">Security Concern</option>
+                                    <option value="feature-request">Feature Enhancement</option>
+                                    <option value="documentation">Documentation</option>
+                                    <option value="accessibility">Accessibility</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Detailed Description</label>
+                                <textarea class="form-textarea" placeholder="Provide comprehensive details about the issue or suggestion, including steps to reproduce, expected vs actual behavior, and potential business impact..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Supporting Materials</label>
+                                <div class="upload-area" onclick="document.getElementById('suggestionImage').click()">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="upload-text">Upload Screenshots, Logs, or Documentation</div>
+                                    <div class="upload-subtext">Drag & drop files here or click to browse<br>PNG, JPG, PDF, TXT up to 25MB</div>
+                                </div>
+                                <input type="file" id="suggestionImage" class="file-input" accept="image/*,.pdf,.txt,.log" multiple>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                                Submit Report
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="chart-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-chart-line"></i>
+                            Resolution Analytics
+                        </h3>
+                        <div class="chart-placeholder">
+                            <div class="chart-content">
+                                <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                                <div>Advanced Analytics Dashboard</div>
+                                <div style="font-size: 1rem; opacity: 0.8; margin-top: 8px;">
+                                    Real-time resolution metrics and trend analysis
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="suggestions-status">
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">
+                            <i class="fas fa-hourglass-half"></i>
+                            Active Issues
+                        </h4>
+                        <div class="status-item">
+                            <div class="status-title">Enterprise API Rate Limiting</div>
+                            <div class="status-desc">Performance optimization for high-volume enterprise clients requiring increased throughput capacity</div>
+                            <span class="status-badge badge-progress">
+                                <i class="fas fa-cog fa-spin"></i>
+                                In Development
+                            </span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-title">Advanced Analytics Dashboard</div>
+                            <div class="status-desc">Enhanced reporting capabilities with real-time metrics and custom KPI tracking for enterprise accounts</div>
+                            <span class="status-badge badge-pending">
+                                <i class="fas fa-clock"></i>
+                                Under Review
+                            </span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-title">Multi-Language NLP Enhancement</div>
+                            <div class="status-desc">Expanding language support to include regional dialects and technical terminology processing</div>
+                            <span class="status-badge badge-progress">
+                                <i class="fas fa-rocket"></i>
+                                Testing Phase
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">
+                            <i class="fas fa-check-circle"></i>
+                            Resolved & Implemented
+                        </h4>
+                        <div class="status-item">
+                            <div class="status-title">SSO Integration Module</div>
+                            <div class="status-desc">Enterprise single sign-on authentication with SAML 2.0 and OAuth 2.0 support successfully deployed</div>
+                            <span class="status-badge badge-resolved">
+                                <i class="fas fa-check"></i>
+                                Completed
+                            </span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-title">Advanced Conversation History</div>
+                            <div class="status-desc">Comprehensive chat export functionality with advanced filtering and search capabilities</div>
+                            <span class="status-badge badge-resolved">
+                                <i class="fas fa-star"></i>
+                                Live
+                            </span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-title">Response Time Optimization</div>
+                            <div class="status-desc">AI model optimization achieving 40% improvement in response latency for complex queries</div>
+                            <span class="status-badge badge-resolved">
+                                <i class="fas fa-trophy"></i>
+                                Deployed
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
