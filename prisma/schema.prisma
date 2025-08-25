@@ -53,6 +53,7 @@ type File {
   fileType String // e.g. "photo", "pdf", "txt", "doc"
   fileData Bytes   // stores the actual file binary data
   fileSize Int     // size in KB or Bytes
+  fileExtension  String // file extension
 }
 
 /// ---------------- TOP REVIEWS ----------------

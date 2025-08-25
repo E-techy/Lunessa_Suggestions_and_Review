@@ -3,13 +3,24 @@ const prisma = new PrismaClient();
 const calculateMovingAverage = require("./calculate_moving_average");
 
 /**
- * Updates the global ReviewStats with new review information.
+ * Updates the global ReviewStats with new or modified review information.
  *
- * @param {number} ratingStar - The rating star value from the new review (e.g. 1–5).
- * @param {boolean} reviewPositivity - Whether the review is positive.
- * @returns {Promise<boolean>} - Returns true if update successful, false otherwise.
+ * @param {number} ratingStar - The rating star value from the review (1–5).
+ * @param {number} reviewPositivity - The positivity level of the review (0–100).
+ * @param {"new" | "modification"} [type="new"] - The type of update:
+ *   - `"new"`: Adds a completely new review (increments total reviews).
+ *   - `"modification"`: Updates an existing review (does not increment total reviews).
+ * @returns {Promise<boolean>} - Resolves to `true` if update successful, `false` otherwise.
+ *
+ * @example
+ * // Adding a new review
+ * await updateReviewStats(5, 90, "new");
+ *
+ * @example
+ * // Modifying an existing review (no total count increase)
+ * await updateReviewStats(4, 75, "modification");
  */
-async function updateReviewStats(ratingStar, reviewPositivity) {
+async function updateReviewStats(ratingStar, reviewPositivity, type = "new") {
   try {
     // Fetch existing stats (only one object should exist)
     let stats = await prisma.reviewStats.findFirst();
@@ -20,7 +31,7 @@ async function updateReviewStats(ratingStar, reviewPositivity) {
         data: {
           averageRating: ratingStar,
           totalReviews: 1,
-          positivityLevel: reviewPositivity, // 👈 percentage, not optional
+          positivityLevel: reviewPositivity, // percentage
         },
       });
       return true;
@@ -30,17 +41,16 @@ async function updateReviewStats(ratingStar, reviewPositivity) {
     const newAverageRating = calculateMovingAverage(
       stats.averageRating,
       ratingStar,
-      stats.totalReviews
+      stats.totalReviews,
+      type
     );
-
-    // Convert positivity to percentage (100 for positive, 0 for negative)
-    const positivityValue = reviewPositivity;
 
     // Update positivity level using moving average
     const newPositivityLevel = calculateMovingAverage(
       stats.positivityLevel,
-      positivityValue,
-      stats.totalReviews
+      reviewPositivity,
+      stats.totalReviews,
+      type
     );
 
     // Update stats in DB
@@ -48,8 +58,8 @@ async function updateReviewStats(ratingStar, reviewPositivity) {
       where: { id: stats.id },
       data: {
         averageRating: newAverageRating,
-        totalReviews: stats.totalReviews + 1,
-        positivityLevel: newPositivityLevel, // stays between 0–100
+        totalReviews: type === "new" ? stats.totalReviews + 1 : stats.totalReviews,
+        positivityLevel: newPositivityLevel,
       },
     });
 
