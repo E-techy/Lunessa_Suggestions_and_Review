@@ -11,6 +11,8 @@
     <script src="utils/rating.js" defer></script>
     <script src="utils/fileUpload.js" defer></script>
     <script src="utils/forms.js" defer></script>
+    <script src="utils/reviewsTable.js" defer></script>
+    <script src="utils/suggestionsTable.js" defer></script>
     <script src="utils/tabs.js" defer></script>
     <script src="utils/animations.js" defer></script>
     <script src="utils/main.js" defer></script>
@@ -70,7 +72,7 @@
                         <div class="form-section">
                             <h3 class="section-title">
                                 <i class="fas fa-edit"></i>
-                                Submit Professional Review
+                                Submit Review
                             </h3>
                             <form class="form-grid" onsubmit="submitReview(event)">
                                 <div class="form-group">
@@ -102,13 +104,57 @@
                                     </div>
                                 </div>
 
-                                <div style="margin-top: 24px;">
-                                    <button type="submit" class="btn btn-primary">
+                                <div style="margin-top: 24px;" class="form-buttons">
+                                    <!-- Submit button for new reviews -->
+                                    <button type="submit" class="btn btn-primary" id="submitReviewBtn">
                                         <i class="fas fa-paper-plane"></i>
                                         Submit Review
                                     </button>
+                                    
+                                    <!-- Update button for editing reviews (initially hidden) -->
+                                    <button type="button" class="btn btn-warning" id="updateReviewBtn" style="display: none;" onclick="updateReview()">
+                                        <i class="fas fa-sync-alt"></i>
+                                        Update Review
+                                    </button>
+                                    
+                                    <!-- Cancel button for editing mode (initially hidden) -->
+                                    <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none; margin-left: 12px;" onclick="cancelEdit()">
+                                        <i class="fas fa-times"></i>
+                                        Cancel
+                                    </button>
                                 </div>
                             </form>
+                        </div>
+                        
+                        <div class="reviews-table-section">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 class="section-title">
+                                    <i class="fas fa-list-alt"></i>
+                                    Your Reviews
+                                </h3>
+                                <div class="search-box" style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="text" 
+                                           placeholder="Search reviews..." 
+                                           class="form-input" 
+                                           style="width: 200px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;"
+                                           oninput="window.reviewsTableModule.filterReviews(this.value)">
+                                    <i class="fas fa-search" style="color: #6b7280;"></i>
+                                </div>
+                            </div>
+                            <div class="reviews-table-container">
+                                <table class="reviews-table">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fas fa-comment-alt"></i> Description</th>
+                                            <th><i class="fas fa-calendar"></i> Date</th>
+                                            <th><i class="fas fa-cog"></i> Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Table content will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
@@ -222,19 +268,36 @@
                         </form>
                     </div>
 
-                    <div class="chart-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-chart-line"></i>
-                            Resolution Analytics
-                        </h3>
-                        <div class="chart-placeholder">
-                            <div class="chart-content">
-                                <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 16px;"></i>
-                                <div>Advanced Analytics Dashboard</div>
-                                <div style="font-size: 1rem; opacity: 0.8; margin-top: 8px;">
-                                    Real-time resolution metrics and trend analysis
-                                </div>
+                    <div class="suggestions-table-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 class="section-title">
+                                <i class="fas fa-list-alt"></i>
+                                Your Submitted Issues & Suggestions
+                            </h3>
+                            <div class="search-box" style="display: flex; align-items: center; gap: 8px;">
+                                <input type="text" 
+                                       placeholder="Search suggestions..." 
+                                       class="form-input" 
+                                       style="width: 200px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;"
+                                       oninput="window.suggestionsTableModule.filterSuggestions(this.value)">
+                                <i class="fas fa-search" style="color: #6b7280;"></i>
                             </div>
+                        </div>
+                        <div class="suggestions-table-container">
+                            <table class="suggestions-table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-tag"></i> Category</th>
+                                        <th><i class="fas fa-comment-alt"></i> Description</th>
+                                        <th><i class="fas fa-traffic-light"></i> Status</th>
+                                        <th><i class="fas fa-calendar"></i> Date</th>
+                                        <th><i class="fas fa-cog"></i> Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Table content will be populated by JavaScript -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

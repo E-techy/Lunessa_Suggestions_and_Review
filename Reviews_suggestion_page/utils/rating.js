@@ -71,9 +71,21 @@ function resetRating() {
     }
 }
 
+function setRating(rating) {
+    if (rating >= 1 && rating <= 5) {
+        currentReviewRating = rating;
+        updateReviewStars();
+        const ratingLabel = document.querySelector('.rating-label');
+        if (ratingLabel) {
+            ratingLabel.textContent = ratingLabels[rating];
+        }
+    }
+}
+
 // Export functions for use in other modules
 window.ratingModule = {
     currentReviewRating: () => currentReviewRating,
     resetRating,
+    setRating,
     initializeRating
 };

@@ -37,3 +37,34 @@
     border-color: var(--accent);
     background: var(--accent-light);
 }
+
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.3);
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+.form-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .form-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .form-buttons .btn {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+}

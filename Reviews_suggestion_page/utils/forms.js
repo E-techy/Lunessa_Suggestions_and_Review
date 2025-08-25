@@ -52,7 +52,21 @@ function submitReview(event) {
 function submitSuggestion(event) {
     event.preventDefault();
     
-    const submitBtn = event.target.querySelector('.btn-primary');
+    const form = event.target;
+    const categorySelect = form.querySelector('select');
+    const descriptionTextarea = form.querySelector('textarea');
+    const fileInput = form.querySelector('input[type="file"]');
+    
+    // Validation
+    if (!categorySelect.value || !descriptionTextarea.value.trim()) {
+        window.notificationModule.showNotification(
+            'Please fill in all required fields.', 
+            'warning'
+        );
+        return;
+    }
+    
+    const submitBtn = form.querySelector('.btn-primary');
     const originalHTML = submitBtn.innerHTML;
     
     // Show loading state
@@ -62,18 +76,42 @@ function submitSuggestion(event) {
 
     // Simulate API call
     setTimeout(() => {
+        // Map form values to display names
+        const categoryDisplayMap = {
+            'critical-bug': 'Critical Bug',
+            'ui-ux': 'UI/UX',
+            'performance': 'Performance',
+            'api-integration': 'API Integration',
+            'security': 'Security',
+            'feature-request': 'Feature Request',
+            'documentation': 'Documentation',
+            'accessibility': 'Accessibility'
+        };
+        
+        // Prepare suggestion data
+        const suggestionData = {
+            category: categoryDisplayMap[categorySelect.value] || categorySelect.value,
+            description: descriptionTextarea.value.trim(),
+            files: fileInput.files ? Array.from(fileInput.files) : []
+        };
+        
+        // Add to suggestions table
+        if (window.suggestionsTableModule) {
+            window.suggestionsTableModule.addSuggestion(suggestionData);
+        }
+        
         submitBtn.innerHTML = '<i class="fas fa-check"></i> Report Submitted';
         submitBtn.classList.remove('loading');
         submitBtn.classList.add('success-animation');
         
         window.notificationModule.showNotification(
-            'Your issue report has been submitted to our engineering team. You will receive a tracking ID via email shortly.', 
+            'Your issue report has been submitted to our engineering team. You can track its progress in the table below.', 
             'success'
         );
         
         // Reset form
         setTimeout(() => {
-            event.target.reset();
+            form.reset();
             if (window.fileUploadModule) {
                 window.fileUploadModule.resetUploadArea();
             }
