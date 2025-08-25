@@ -9,3 +9,5 @@
 
 # Prisma
 /prisma/generated
+
+test.js
