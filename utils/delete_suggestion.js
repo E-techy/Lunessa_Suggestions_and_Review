@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 async function deleteSuggestion(suggestionId, username) {
   try {
     // 1️⃣ Fetch the suggestion first
-    const suggestion = await prisma.suggestion.findUnique({
+    const suggestion = await prisma.Suggestion.findUnique({
       where: { suggestionId },
     });
 
@@ -41,7 +41,7 @@ async function deleteSuggestion(suggestionId, username) {
     }
 
     // 4️⃣ Passed all checks → delete suggestion
-    await prisma.suggestion.delete({
+    await prisma.Suggestion.delete({
       where: { suggestionId },
     });
 
