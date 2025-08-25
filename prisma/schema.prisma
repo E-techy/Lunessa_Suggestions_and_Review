@@ -11,11 +11,12 @@ datasource db {
 
 /// Global statistics (only a single object stored here)
 model ReviewStats {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  averageRating   Int
-  totalReviews    Int
-  positiveReviews Int
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  averageRating  Float
+  totalReviews   Int
+  positivityLevel Float   // value 0 - 100
 }
+
 
 /// Admin model for managing reviews
 model ReviewsAdmin {
