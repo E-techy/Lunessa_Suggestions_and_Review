@@ -40,6 +40,7 @@ model Review {
   ratingStar    Int
   files         File[]  
   reviewType    String
+  positivityLevel  Float
 
   @@index([createdAt], map: "idx_review_createdAt")     // fast recent reviews
   @@index([username], map: "idx_review_username")       // fast search by username

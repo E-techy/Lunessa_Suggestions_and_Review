@@ -16,7 +16,7 @@ const prisma = new PrismaClient();
  * @param {number} reviewObj.ratingStar - Rating given (e.g. 1–5).
  * @param {Array<Object>} [reviewObj.files] - Optional files attached.
  * @param {string} reviewObj.reviewType - Type of review (e.g. "positive", "negative", etc.).
- * @param {boolean} reviewObj.reviewPositivity - Whether the review is positive or not.
+ * @param {boolean} reviewObj.positivityLevel - Whether the review is positive or not.
  *
  * @returns {Promise<boolean>} - `true` if review is added successfully, otherwise `false`.
  */
@@ -32,13 +32,14 @@ async function addReview(reviewObj) {
         ratingStar: reviewObj.ratingStar,
         files: reviewObj.files || [],
         reviewType: reviewObj.reviewType,
+        positivityLevel: reviewObj.positivityLevel
       },
     });
 
     // Call updateReviewStats only if review was successfully created
     if (newReview) {
       // Convert reviewPositivity → percentage (0 to 100)
-      const positivityValue = reviewObj.reviewPositivity;
+      const positivityValue = reviewObj.positivityLevel;
 
       await updateReviewStats(reviewObj.ratingStar, positivityValue);
       return true;
