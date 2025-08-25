@@ -22,6 +22,11 @@ function initializeApplication() {
         window.fileUploadModule.initializeFileUpload();
     }
     
+    // Initialize reviews table
+    if (window.reviewsTableModule) {
+        window.reviewsTableModule.initialize();
+    }
+    
     // Initialize animations and UI effects
     if (window.animationModule) {
         window.animationModule.initializeAllAnimations();

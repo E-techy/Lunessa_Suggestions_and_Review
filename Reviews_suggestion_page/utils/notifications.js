@@ -69,7 +69,7 @@ function addNotificationStyles() {
             font-weight: 500;
         }
         .notification-success {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(11, 238, 162, 0.97);
             color: var(--success);
             border: 1px solid rgba(16, 185, 129, 0.2);
         }
@@ -84,13 +84,14 @@ function addNotificationStyles() {
             border: 1px solid rgba(239, 68, 68, 0.2);
         }
         .notification-info {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(236, 234, 71, 1);
             color: var(--info);
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
         .notification-content {
             display: flex;
             align-items: center;
+            color : black;
             gap: 12px;
             flex: 1;
         }
