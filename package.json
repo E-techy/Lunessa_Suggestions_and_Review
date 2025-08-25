@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/E-techy/Lunessa_Suggestions_and_Review#readme",
   "dependencies": {
+    "@google/genai": "^1.15.0",
     "@prisma/client": "^6.14.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.1",
