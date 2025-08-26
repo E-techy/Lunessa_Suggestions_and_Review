@@ -117,7 +117,7 @@ window.suggestionsTableModule = (function() {
             form.classList.add('editing-mode');
             
             // Show update and cancel buttons, hide submit button
-            const submitBtn = form.querySelector('button[type=\"submit\"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
                 submitBtn.style.display = 'none';
                 
@@ -128,7 +128,7 @@ window.suggestionsTableModule = (function() {
                     updateBtn.id = 'updateSuggestionBtn';
                     updateBtn.type = 'button';
                     updateBtn.className = 'btn btn-warning';
-                    updateBtn.innerHTML = '<i class=\"fas fa-sync-alt\"></i> Update Suggestion';
+                    updateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Update Suggestion';
                     updateBtn.onclick = updateSuggestion;
                     submitBtn.parentNode.appendChild(updateBtn);
                 }
@@ -142,7 +142,7 @@ window.suggestionsTableModule = (function() {
                     cancelBtn.type = 'button';
                     cancelBtn.className = 'btn btn-secondary';
                     cancelBtn.style.marginLeft = '12px';
-                    cancelBtn.innerHTML = '<i class=\"fas fa-times\"></i> Cancel';
+                    cancelBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
                     cancelBtn.onclick = cancelEditSuggestion;
                     submitBtn.parentNode.appendChild(cancelBtn);
                 }
@@ -206,7 +206,7 @@ window.suggestionsTableModule = (function() {
             form.reset();
             
             // Reset button visibility
-            const submitBtn = form.querySelector('button[type=\"submit\"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
             const updateBtn = form.querySelector('#updateSuggestionBtn');
             const cancelBtn = form.querySelector('#cancelEditSuggestionBtn');
             
@@ -229,19 +229,51 @@ window.suggestionsTableModule = (function() {
         }
     }
 
-    // Filter suggestions
-    function filterSuggestions(searchTerm) {
-        const term = searchTerm.toLowerCase().trim();
-        if (term === '') {
-            filteredSuggestions = [...suggestions];
-        } else {
-            filteredSuggestions = suggestions.filter(suggestion =>
-                suggestion.category.toLowerCase().includes(term) ||
-                suggestion.description.toLowerCase().includes(term) ||
-                suggestion.status.toLowerCase().includes(term)
-            );
-        }
+    // Apply all filters (category, status, and description search)
+    function applyFilters() {
+        const categoryFilter = document.getElementById('categoryFilter')?.value || '';
+        const statusFilter = document.getElementById('statusFilter')?.value || '';
+        const descriptionSearch = document.getElementById('descriptionSearch')?.value || '';
+        
+        filteredSuggestions = suggestions.filter(suggestion => {
+            // Category filter
+            const categoryMatch = !categoryFilter || suggestion.category === categoryFilter;
+            
+            // Status filter
+            const statusMatch = !statusFilter || suggestion.status === statusFilter;
+            
+            // Description search (only searches in description field)
+            const descriptionMatch = !descriptionSearch.trim() || 
+                suggestion.description.toLowerCase().includes(descriptionSearch.toLowerCase().trim());
+            
+            return categoryMatch && statusMatch && descriptionMatch;
+        });
+        
         renderTable();
+    }
+    
+    // Clear all filters
+    function clearFilters() {
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const descriptionSearch = document.getElementById('descriptionSearch');
+        
+        if (categoryFilter) categoryFilter.value = '';
+        if (statusFilter) statusFilter.value = '';
+        if (descriptionSearch) descriptionSearch.value = '';
+        
+        filteredSuggestions = [...suggestions];
+        renderTable();
+    }
+    
+    // Legacy filter function for backward compatibility
+    function filterSuggestions(searchTerm) {
+        // This function is kept for backward compatibility but now only searches descriptions
+        const descriptionSearch = document.getElementById('descriptionSearch');
+        if (descriptionSearch) {
+            descriptionSearch.value = searchTerm;
+        }
+        applyFilters();
     }
 
     // Get status display info
@@ -255,15 +287,61 @@ window.suggestionsTableModule = (function() {
         return statusMap[status] || statusMap['pending'];
     }
 
+    // Update filter results counter
+    function updateFilterResults() {
+        // Remove existing filter results element
+        const existingResults = document.querySelector('.filter-results');
+        if (existingResults) {
+            existingResults.remove();
+        }
+        
+        // Only show results count if there are filters applied or we have suggestions
+        const categoryFilter = document.getElementById('categoryFilter')?.value;
+        const statusFilter = document.getElementById('statusFilter')?.value;
+        const descriptionSearch = document.getElementById('descriptionSearch')?.value;
+        
+        const hasFilters = categoryFilter || statusFilter || (descriptionSearch && descriptionSearch.trim());
+        
+        if (suggestions.length > 0 && (hasFilters || filteredSuggestions.length !== suggestions.length)) {
+            const filtersPanel = document.querySelector('.filters-panel');
+            if (filtersPanel) {
+                const resultsDiv = document.createElement('div');
+                resultsDiv.className = 'filter-results';
+                
+                if (filteredSuggestions.length === 0) {
+                    resultsDiv.textContent = `No suggestions match your current filters. Showing 0 of ${suggestions.length} suggestions.`;
+                } else if (filteredSuggestions.length === suggestions.length) {
+                    resultsDiv.textContent = `Showing all ${suggestions.length} suggestions.`;
+                } else {
+                    resultsDiv.textContent = `Showing ${filteredSuggestions.length} of ${suggestions.length} suggestions.`;
+                }
+                
+                filtersPanel.appendChild(resultsDiv);
+            }
+        }
+    }
+
     // Render table
     function renderTable() {
         const tableBody = document.querySelector('.suggestions-table tbody');
+        const table = document.querySelector('.suggestions-table');
         if (!tableBody) return;
 
+        // Handle empty states
         if (filteredSuggestions.length === 0) {
             tableBody.innerHTML = '';
+            // Add appropriate class based on whether we have any suggestions at all
+            if (suggestions.length === 0) {
+                table?.classList.add('no-data');
+            } else {
+                table?.classList.remove('no-data');
+            }
+            updateFilterResults();
             return;
         }
+
+        // Remove no-data class when we have results
+        table?.classList.remove('no-data');
 
         tableBody.innerHTML = filteredSuggestions.map(suggestion => {
             const statusInfo = getStatusInfo(suggestion.status);
@@ -276,35 +354,35 @@ window.suggestionsTableModule = (function() {
             return `
                 <tr>
                     <td>
-                        <span class=\"suggestion-category\">${suggestion.category}</span>
+                        <span class="suggestion-category">${suggestion.category}</span>
                     </td>
                     <td>
-                        <div class=\"suggestion-description\" title=\"${suggestion.description}\">
+                        <div class="suggestion-description" title="${suggestion.description}">
                             ${suggestion.description}
                         </div>
                     </td>
                     <td>
-                        <span class=\"suggestion-status ${statusInfo.class}\">
-                            <i class=\"${statusInfo.icon}\"></i>
+                        <span class="suggestion-status ${statusInfo.class}">
+                            <i class="${statusInfo.icon}"></i>
                             ${statusInfo.text}
                         </span>
                     </td>
                     <td>
-                        <span class=\"suggestion-date\">${formattedDate}</span>
+                        <span class="suggestion-date">${formattedDate}</span>
                     </td>
                     <td>
-                        <button class=\"btn btn-small btn-primary\" onclick=\"window.suggestionsTableModule.editSuggestion(${suggestion.id})\">
-                            <i class=\"fas fa-edit\"></i>
-                            <span>Edit</span>
+                        <button class="btn btn-small btn-secondary" onclick="window.suggestionsTableModule.editSuggestion(${suggestion.id})" title="Edit Suggestion">
+                            <i class="fas fa-edit"></i>
                         </button>
-                        <button class=\"btn btn-small btn-danger\" onclick=\"window.suggestionsTableModule.deleteSuggestion(${suggestion.id})\">
-                            <i class=\"fas fa-trash\"></i>
-                            <span>Delete</span>
+                        <button class="btn btn-small btn-danger" onclick="window.suggestionsTableModule.deleteSuggestion(${suggestion.id})" title="Delete Suggestion">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
             `;
         }).join('');
+        
+        updateFilterResults();
     }
 
     // Get all suggestions
@@ -325,6 +403,8 @@ window.suggestionsTableModule = (function() {
         updateSuggestion,
         deleteSuggestion,
         filterSuggestions,
+        applyFilters,
+        clearFilters,
         getAllSuggestions,
         getSuggestionsByStatus,
         cancelEditSuggestion

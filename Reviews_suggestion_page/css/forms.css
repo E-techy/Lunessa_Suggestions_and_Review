@@ -1,7 +1,7 @@
 /* Form Styles */
 .reviews-container {
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: 1fr 800px;
     gap: 40px;
 }
 
@@ -211,7 +211,7 @@
 }
 
 .reviews-table tbody td {
-    padding: 20px 24px;
+    padding: 19px 24px;
     font-size: 0.95rem;
     color: var(--text-primary);
     vertical-align: middle;
