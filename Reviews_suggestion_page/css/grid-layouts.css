@@ -9,6 +9,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+    margin-bottom: 32px;
 }
 .suggestions-table-section{
     margin-bottom: 32px;
