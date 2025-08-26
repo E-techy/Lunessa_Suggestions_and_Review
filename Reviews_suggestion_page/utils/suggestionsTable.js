@@ -10,56 +10,56 @@ window.suggestionsTableModule = (function() {
     let filteredSuggestions = [];
     let currentlyEditing = null;
 
-    // Sample data for demonstration
-    const sampleSuggestions = [
-        {
-            id: 1,
-            category: 'Performance',
-            description: 'Improve response time for complex API queries. Currently experiencing delays of 3-5 seconds for nested data requests.',
-            status: 'progress',
-            date: '2024-01-20',
-            files: []
-        },
-        {
-            id: 2,
-            category: 'Feature Request',
-            description: 'Add dark mode support for the user interface to reduce eye strain during extended usage periods.',
-            status: 'pending',
-            date: '2024-01-18',
-            files: []
-        },
-        {
-            id: 3,
-            category: 'UI/UX',
-            description: 'The mobile navigation menu is difficult to use on smaller screens. Consider implementing a hamburger menu.',
-            status: 'resolved',
-            date: '2024-01-15',
-            files: []
-        },
-        {
-            id: 4,
-            category: 'Security',
-            description: 'Implement two-factor authentication for enhanced account security, especially for enterprise users.',
-            status: 'progress',
-            date: '2024-01-12',
-            files: []
-        },
-        {
-            id: 5,
-            category: 'Critical Bug',
-            description: 'Data export functionality fails when selecting large datasets (>10,000 records). Browser crashes occur.',
-            status: 'pending',
-            date: '2024-01-10',
-            files: []
+    // Function to transform suggestion sample data to table format
+    function transformSuggestionData(suggestionData) {
+        // Map suggestion categories to display names
+        const categoryMap = {
+            'feature_request': 'Feature Request',
+            'bug_report': 'Critical Bug',
+            'ui_improvement': 'UI/UX',
+            'performance': 'Performance',
+            'security': 'Security',
+            'accessibility': 'Accessibility',
+            'infrastructure': 'Infrastructure'
+        };
+
+        // Map suggestion status to display status
+        const statusMap = {
+            'live': 'progress',
+            'pending': 'pending',
+            'completed': 'resolved'
+        };
+
+        return suggestionData.map((item, index) => ({
+            id: item.suggestionId || item.id || index + 1, // Ensure we always have an ID
+            category: categoryMap[item.suggestionCategory] || item.suggestionCategory,
+            description: item.suggestionDescription,
+            status: statusMap[item.suggestionStatus] || item.suggestionStatus,
+            date: new Date(item.createdAt).toISOString().split('T')[0],
+            files: item.files || [],
+            originalData: item // Keep reference to original data
+        }));
+    }
+
+    // Load suggestion data from external file
+    function loadSuggestionData() {
+        // Check if suggestion sample data is available
+        if (typeof suggestionSampleData !== 'undefined') {
+            return transformSuggestionData(suggestionSampleData);
         }
-    ];
+        
+        // Return empty array if external data not available
+        console.warn('suggestionSampleData not found. Make sure suggestion_sample_data.js is loaded.');
+        return [];
+    }
 
     // Initialize suggestions with sample data
     function init() {
-        suggestions = [...sampleSuggestions];
+        suggestions = loadSuggestionData();
         filteredSuggestions = [...suggestions];
         renderTable();
-        console.log('Suggestions Table Module initialized');
+        console.log('Suggestions Table Module initialized with', suggestions.length, 'suggestions');
+        console.log('Sample data loaded:', suggestions);
     }
 
     // Add new suggestion
@@ -87,33 +87,60 @@ window.suggestionsTableModule = (function() {
 
     // Edit suggestion
     function editSuggestion(id) {
-        const suggestion = suggestions.find(s => s.id === id);
-        if (!suggestion) return;
+        // Handle both string and numeric IDs
+        const suggestion = suggestions.find(s => s.id == id);
+        if (!suggestion) {
+            console.error('Suggestion not found with ID:', id);
+            return;
+        }
+
+        // Check if status is pending - only allow editing if status is pending
+        if (suggestion.status !== 'pending') {
+            if (window.notificationModule) {
+                window.notificationModule.showNotification(
+                    'Only suggestions with "Pending" status can be modified. Current status: ' + 
+                    getStatusInfo(suggestion.status).text, 
+                    'error'
+                );
+            } else {
+                // Fallback notification if notification module is not available
+                alert('Only suggestions with "Pending" status can be modified. Current status: ' + 
+                      getStatusInfo(suggestion.status).text);
+            }
+            return;
+        }
 
         currentlyEditing = id;
         
-        // Get form elements
-        const categorySelect = document.querySelector('#suggestions select');
-        const descriptionTextarea = document.querySelector('#suggestions textarea');
+        // Get form elements - more specific selectors to find the right form in suggestions tab
+        const suggestionsTab = document.querySelector('#suggestions');
+        const categorySelect = suggestionsTab.querySelector('.form-select');
+        const descriptionTextarea = suggestionsTab.querySelector('.form-textarea');
         
         if (categorySelect && descriptionTextarea) {
-            // Map category display names back to form values
+            // Map category display names back to form values - must match HTML form options
             const categoryMap = {
-                'Critical Bug': 'critical-bug',
+                'Feature Request': 'feature-request',
+                'Critical Bug': 'critical-bug', 
                 'UI/UX': 'ui-ux',
                 'Performance': 'performance',
                 'API Integration': 'api-integration',
                 'Security': 'security',
-                'Feature Request': 'feature-request',
                 'Documentation': 'documentation',
-                'Accessibility': 'accessibility'
+                'Accessibility': 'accessibility',
+                'Infrastructure': 'infrastructure'
             };
+            
+            // Debug logging to see what values we have
+            console.log('Editing suggestion:', suggestion);
+            console.log('Category to map:', suggestion.category);
+            console.log('Mapped value:', categoryMap[suggestion.category]);
             
             categorySelect.value = categoryMap[suggestion.category] || '';
             descriptionTextarea.value = suggestion.description;
             
             // Change form to editing mode
-            const form = document.querySelector('#suggestions form');
+            const form = suggestionsTab.querySelector('form');
             form.classList.add('editing-mode');
             
             // Show update and cancel buttons, hide submit button
@@ -158,8 +185,9 @@ window.suggestionsTableModule = (function() {
     function updateSuggestion() {
         if (!currentlyEditing) return;
 
-        const categorySelect = document.querySelector('#suggestions select');
-        const descriptionTextarea = document.querySelector('#suggestions textarea');
+        const suggestionsTab = document.querySelector('#suggestions');
+        const categorySelect = suggestionsTab.querySelector('.form-select');
+        const descriptionTextarea = suggestionsTab.querySelector('.form-textarea');
         
         if (!categorySelect.value || !descriptionTextarea.value.trim()) {
             if (window.notificationModule) {
@@ -168,19 +196,20 @@ window.suggestionsTableModule = (function() {
             return;
         }
 
-        // Update the suggestion
-        const suggestionIndex = suggestions.findIndex(s => s.id === currentlyEditing);
+        // Update the suggestion - handle both string and numeric IDs
+        const suggestionIndex = suggestions.findIndex(s => s.id == currentlyEditing);
         if (suggestionIndex !== -1) {
-            // Map form values to display names
+            // Map form values to display names - must match transformSuggestionData
             const categoryDisplayMap = {
+                'feature-request': 'Feature Request',
                 'critical-bug': 'Critical Bug',
                 'ui-ux': 'UI/UX',
                 'performance': 'Performance',
                 'api-integration': 'API Integration',
                 'security': 'Security',
-                'feature-request': 'Feature Request',
                 'documentation': 'Documentation',
-                'accessibility': 'Accessibility'
+                'accessibility': 'Accessibility',
+                'infrastructure': 'Infrastructure'
             };
             
             suggestions[suggestionIndex].category = categoryDisplayMap[categorySelect.value] || categorySelect.value;
@@ -200,7 +229,8 @@ window.suggestionsTableModule = (function() {
     function cancelEditSuggestion() {
         currentlyEditing = null;
         
-        const form = document.querySelector('#suggestions form');
+        const suggestionsTab = document.querySelector('#suggestions');
+        const form = suggestionsTab.querySelector('form');
         if (form) {
             form.classList.remove('editing-mode');
             form.reset();
@@ -219,7 +249,7 @@ window.suggestionsTableModule = (function() {
     // Delete suggestion
     function deleteSuggestion(id) {
         if (confirm('Are you sure you want to delete this suggestion? This action cannot be undone.')) {
-            suggestions = suggestions.filter(s => s.id !== id);
+            suggestions = suggestions.filter(s => s.id != id);
             filteredSuggestions = [...suggestions];
             renderTable();
             
@@ -357,8 +387,9 @@ window.suggestionsTableModule = (function() {
                         <span class="suggestion-category">${suggestion.category}</span>
                     </td>
                     <td>
-                        <div class="suggestion-description" title="${suggestion.description}">
-                            ${suggestion.description}
+                        <div class="suggestion-description" 
+                             data-full-text="${suggestion.description.replace(/"/g, '&quot;')}">
+                            ${truncateText(suggestion.description, 50)}
                         </div>
                     </td>
                     <td>
@@ -371,10 +402,10 @@ window.suggestionsTableModule = (function() {
                         <span class="suggestion-date">${formattedDate}</span>
                     </td>
                     <td>
-                        <button class="btn btn-small btn-secondary" onclick="window.suggestionsTableModule.editSuggestion(${suggestion.id})" title="Edit Suggestion">
+                        <button class="btn btn-small btn-secondary" onclick="window.suggestionsTableModule.editSuggestion('${suggestion.id}')" title="Edit Suggestion">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-small btn-danger" onclick="window.suggestionsTableModule.deleteSuggestion(${suggestion.id})" title="Delete Suggestion">
+                        <button class="btn btn-small btn-danger" onclick="window.suggestionsTableModule.deleteSuggestion('${suggestion.id}')" title="Delete Suggestion">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -393,6 +424,11 @@ window.suggestionsTableModule = (function() {
     // Get suggestions by status
     function getSuggestionsByStatus(status) {
         return suggestions.filter(s => s.status === status);
+    }
+    
+    // Utility function to truncate text
+    function truncateText(text, maxLength) {
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     }
 
     // Public API
@@ -413,7 +449,85 @@ window.suggestionsTableModule = (function() {
 
 // Initialize when DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.suggestionsTableModule.init);
+    document.addEventListener('DOMContentLoaded', function() {
+        window.suggestionsTableModule.init();
+        // Ensure tooltips are initialized for suggestion descriptions
+        initializeTooltipsForSuggestions();
+    });
 } else {
     window.suggestionsTableModule.init();
+    // Ensure tooltips are initialized for suggestion descriptions
+    initializeTooltipsForSuggestions();
+}
+
+/**
+ * Initialize tooltips specifically for suggestion descriptions
+ * This ensures the same tooltip functionality as review descriptions
+ */
+function initializeTooltipsForSuggestions() {
+    // If the tooltip system from reviewsTable is not yet available,
+    // create a simple version here
+    if (typeof initializeTooltips === 'function') {
+        // Use the existing tooltip system from reviewsTable
+        return;
+    }
+    
+    let tooltip = null;
+    
+    // Create tooltip element
+    function createTooltip() {
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            document.body.appendChild(tooltip);
+        }
+        return tooltip;
+    }
+    
+    // Show tooltip
+    function showTooltip(element, text) {
+        const tooltipEl = createTooltip();
+        tooltipEl.textContent = text;
+        
+        // Position tooltip
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+        tooltipEl.style.left = (rect.left + scrollLeft) + 'px';
+        tooltipEl.style.top = (rect.top + scrollTop - tooltipEl.offsetHeight - 10) + 'px';
+        
+        // Show tooltip with animation
+        setTimeout(() => {
+            tooltipEl.classList.add('show');
+        }, 10);
+    }
+    
+    // Hide tooltip
+    function hideTooltip() {
+        if (tooltip) {
+            tooltip.classList.remove('show');
+        }
+    }
+    
+    // Delegate event listeners for suggestion descriptions
+    document.addEventListener('mouseover', function(event) {
+        const target = event.target;
+        if (target.matches('.suggestion-description')) {
+            const fullText = target.getAttribute('data-full-text') || target.title;
+            const currentText = target.textContent.trim();
+            
+            // Only show tooltip if text is truncated
+            if (fullText && fullText !== currentText && fullText.length > currentText.length) {
+                showTooltip(target, fullText);
+            }
+        }
+    });
+    
+    document.addEventListener('mouseout', function(event) {
+        const target = event.target;
+        if (target.matches('.suggestion-description')) {
+            hideTooltip();
+        }
+    });
 }

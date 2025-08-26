@@ -76,16 +76,17 @@ function submitSuggestion(event) {
 
     // Simulate API call
     setTimeout(() => {
-        // Map form values to display names
+        // Map form values to display names - must match HTML form options
         const categoryDisplayMap = {
+            'feature-request': 'Feature Request',
             'critical-bug': 'Critical Bug',
             'ui-ux': 'UI/UX',
             'performance': 'Performance',
-            'api-integration': 'API Integration',
             'security': 'Security',
-            'feature-request': 'Feature Request',
-            'documentation': 'Documentation',
-            'accessibility': 'Accessibility'
+            'accessibility': 'Accessibility',
+            'infrastructure': 'Infrastructure',
+            'api-integration': 'API Integration',
+            'documentation': 'Documentation'
         };
         
         // Prepare suggestion data

@@ -3,38 +3,145 @@
  * Handles dynamic table population, CRUD operations for reviews
  */
 
-// Reviews data storage (in real app, this would come from a database)
+// Sample review data adapted from sample_reviews_data.js
 let reviewsData = [
     {
         id: 1,
-        description: "Outstanding AI service with excellent response times and accuracy",
-        date: "2025-01-15",
-        rating: 5
+        reviewID: "REV_001_2024",
+        name: "Alice Johnson",
+        username: "alice_j_2024",
+        description: "Absolutely fantastic product! The quality exceeded my expectations and the delivery was lightning fast. I've been using it for a month now and couldn't be happier. Highly recommend to anyone looking for reliable quality.",
+        ratingStar: 5,
+        date: "2024-01-15",
+        reviewType: "product",
+        positivityLevel: 0.95,
+        files: [
+            {
+                fileName: "product_unboxing.jpg",
+                fileType: "photo",
+                fileSize: 2048,
+                fileExtension: "jpg"
+            },
+            {
+                fileName: "review_video.mp4",
+                fileType: "video",
+                fileSize: 15360,
+                fileExtension: "mp4"
+            }
+        ]
     },
     {
         id: 2,
-        description: "Good integration capabilities but needs improvement in multilingual support",
-        date: "2025-01-18",
-        rating: 4
+        reviewID: "REV_002_2024",
+        name: "Mark Thompson",
+        username: "markT_tech",
+        description: "Good product overall, but there are some minor issues with the build quality. The functionality works as advertised, though I wish the instructions were clearer. Still worth the price point.",
+        ratingStar: 4,
+        date: "2024-01-18",
+        reviewType: "product",
+        positivityLevel: 0.72,
+        files: [
+            {
+                fileName: "issue_documentation.pdf",
+                fileType: "pdf",
+                fileSize: 512,
+                fileExtension: "pdf"
+            }
+        ]
     },
     {
         id: 3,
-        description: "Exceptional customer support and robust documentation",
-        date: "2025-01-20",
-        rating: 5
+        reviewID: "REV_003_2024",
+        name: "Sarah Chen",
+        username: "sarahc_design",
+        description: "The service was okay, nothing extraordinary but met basic expectations. Response time could be improved and the interface feels a bit outdated. However, the core functionality works reliably.",
+        ratingStar: 3,
+        date: "2024-01-20",
+        reviewType: "service",
+        positivityLevel: 0.58,
+        files: []
     },
     {
         id: 4,
-        description: "Perfect solution for our enterprise needs",
-        date: "2025-01-22",
-        rating: 5
+        reviewID: "REV_004_2024",
+        name: "David Rodriguez",
+        username: "david_r_customer",
+        description: "Unfortunately, this didn't meet my expectations. The product arrived damaged and customer service was slow to respond. After multiple attempts to resolve the issue, I'm quite disappointed.",
+        ratingStar: 2,
+        date: "2024-01-22",
+        reviewType: "product",
+        positivityLevel: 0.25,
+        files: [
+            {
+                fileName: "damage_report.jpg",
+                fileType: "photo",
+                fileSize: 1024,
+                fileExtension: "jpg"
+            },
+            {
+                fileName: "email_correspondence.txt",
+                fileType: "txt",
+                fileSize: 256,
+                fileExtension: "txt"
+            }
+        ]
     },
     {
         id: 5,
-        description: "Perfect solution for our enterprise needs",
-        date: "2025-01-22",
-        rating: 5
+        reviewID: "REV_005_2024",
+        name: "Emily Watson",
+        username: "emily_w_2024",
+        description: "Terrible experience from start to finish. Product quality is poor, shipping took forever, and when I tried to return it, the process was a nightmare. Would not recommend to anyone.",
+        ratingStar: 1,
+        date: "2024-01-25",
+        reviewType: "product",
+        positivityLevel: 0.05,
+        files: [
+            {
+                fileName: "return_process_issues.doc",
+                fileType: "doc",
+                fileSize: 768,
+                fileExtension: "doc"
+            }
+        ]
     },
+    {
+        id: 6,
+        reviewID: "REV_006_2024",
+        name: "James Wilson",
+        username: "james_wilson_tech",
+        description: "Amazing service! The team went above and beyond to help me with my setup. Technical support was knowledgeable and patient. This is how customer service should be done everywhere.",
+        ratingStar: 5,
+        date: "2024-01-28",
+        reviewType: "service",
+        positivityLevel: 0.98,
+        files: [
+            {
+                fileName: "setup_completion.jpg",
+                fileType: "photo",
+                fileSize: 1536,
+                fileExtension: "jpg"
+            },
+            {
+                fileName: "thank_you_note.txt",
+                fileType: "txt",
+                fileSize: 128,
+                fileExtension: "txt"
+            }
+        ]
+    },
+    {
+        id: 7,
+        reviewID: "REV_007_2024",
+        name: "Lisa Garcia",
+        username: "lisa_g_shopper",
+        description: "Decent product for the price. It does what it's supposed to do, but don't expect any premium features. Good value for money if you're on a budget and need basic functionality.",
+        ratingStar: 4,
+        date: "2024-01-30",
+        reviewType: "product",
+        positivityLevel: 0.68,
+        files: []
+    }
 ];
 
 let currentEditingId = null;
@@ -73,30 +180,99 @@ function populateReviewsTable() {
 function createTableRow(review) {
     const row = document.createElement('tr');
     row.setAttribute('data-review-id', review.id);
+    row.style.cursor = 'pointer';
     
     const formattedDate = formatDate(review.date);
-    const truncatedDescription = truncateText(review.description, 20);
+    const truncatedDescription = truncateText(review.description, 40);
     
     row.innerHTML = `
         <td>
-            <div class="review-description" title="${review.description}">
+            <div class="review-description" 
+                 data-full-text="${review.description.replace(/"/g, '&quot;')}" 
+                 onclick="loadReviewToForm(${review.id})">
                 ${truncatedDescription}
+            </div>
+            <div class="review-meta" style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                By ${review.name} (${review.username}) • ${review.reviewType} • ${review.ratingStar} stars
             </div>
         </td>
         <td>
             <span class="review-date">${formattedDate}</span>
         </td>
         <td>
-            <button class="btn btn-small btn-secondary" onclick="editReview(${review.id})" title="Edit Review">
+            <button class="btn btn-small btn-secondary" onclick="event.stopPropagation(); editReview(${review.id})" title="Edit Review">
                 <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-small btn-danger" onclick="deleteReview(${review.id})" title="Delete Review">
+            <button class="btn btn-small btn-danger" onclick="event.stopPropagation(); deleteReview(${review.id})" title="Delete Review">
                 <i class="fas fa-trash"></i>
             </button>
         </td>
     `;
     
+    // Add row click event for better UX
+    row.addEventListener('click', (e) => {
+        if (!e.target.closest('button')) {
+            loadReviewToForm(review.id);
+        }
+    });
+    
     return row;
+}
+
+/**
+ * Load review data into the form (new functionality)
+ */
+function loadReviewToForm(reviewId) {
+    const review = reviewsData.find(r => r.id === reviewId);
+    if (!review) return;
+
+    const form = document.querySelector('.form-grid');
+    const textarea = form.querySelector('.form-textarea');
+    const ratingElement = form.querySelector('#reviewRating');
+    
+    // Load the review content
+    textarea.value = review.description;
+    
+    // Set rating stars
+    if (ratingElement) {
+        const stars = ratingElement.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            if (index < review.ratingStar) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+        
+        // Set the current rating in the element for the rating module
+        ratingElement.setAttribute('data-current-rating', review.ratingStar);
+        
+        // Update rating module if available
+        if (window.ratingModule && window.ratingModule.setRating) {
+            window.ratingModule.setRating(review.ratingStar);
+        }
+    }
+    
+    // Scroll to form
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Highlight the form briefly
+    form.classList.add('editing-mode');
+    setTimeout(() => form.classList.remove('editing-mode'), 1500);
+    
+    // Show notification
+    if (window.notificationModule) {
+        window.notificationModule.showNotification(
+            `Loaded review by ${review.name}. You can now view or modify the content.`, 
+            'info'
+        );
+    }
+    
+    // Focus on textarea
+    setTimeout(() => {
+        textarea.focus();
+        textarea.scrollTop = 0;
+    }, 500);
 }
 
 /**
@@ -105,9 +281,15 @@ function createTableRow(review) {
 function addNewReview(reviewData) {
     const newReview = {
         id: Date.now(), // Simple ID generation
+        reviewID: `REV_${Date.now()}_2024`,
+        name: reviewData.name || "Anonymous User",
+        username: reviewData.username || "user_" + Date.now(),
         description: reviewData.description,
+        ratingStar: reviewData.rating,
         date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
-        rating: reviewData.rating
+        reviewType: reviewData.reviewType || "general",
+        positivityLevel: calculatePositivityLevel(reviewData.rating),
+        files: reviewData.files || []
     };
     
     reviewsData.unshift(newReview); // Add to beginning of array
@@ -120,6 +302,20 @@ function addNewReview(reviewData) {
             'success'
         );
     }
+}
+
+/**
+ * Calculate positivity level based on rating
+ */
+function calculatePositivityLevel(rating) {
+    const levels = {
+        1: 0.1,
+        2: 0.3,
+        3: 0.5,
+        4: 0.75,
+        5: 0.95
+    };
+    return levels[rating] || 0.5;
 }
 
 /**
@@ -140,24 +336,24 @@ function editReview(reviewId) {
     
     // Set rating - Multiple approaches to ensure it works
     if (ratingElement) {
-        // Method 1: Use the rating module if available
-        if (window.ratingModule && window.ratingModule.setRating) {
-            window.ratingModule.setRating(review.rating);
-        } else {
-            // Method 2: Direct DOM manipulation
-            const stars = ratingElement.querySelectorAll('.star');
-            stars.forEach((star, index) => {
-                if (index < review.rating) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
-                star.setAttribute('data-rating', index + 1);
-            });
-            
-            // Set the current rating in the element
-            ratingElement.setAttribute('data-current-rating', review.rating);
-        }
+    // Method 1: Use the rating module if available
+    if (window.ratingModule && window.ratingModule.setRating) {
+    window.ratingModule.setRating(review.ratingStar);
+    } else {
+    // Method 2: Direct DOM manipulation
+    const stars = ratingElement.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+    if (index < review.ratingStar) {
+    star.classList.add('active');
+    } else {
+    star.classList.remove('active');
+    }
+    star.setAttribute('data-rating', index + 1);
+    });
+    
+    // Set the current rating in the element
+    ratingElement.setAttribute('data-current-rating', review.ratingStar);
+    }
     }
     
     // Switch buttons for edit mode
@@ -222,10 +418,10 @@ function updateReviewMetrics() {
     if (reviewsData.length === 0) return;
 
     // Calculate average rating
-    const avgRating = (reviewsData.reduce((sum, review) => sum + review.rating, 0) / reviewsData.length).toFixed(1);
+    const avgRating = (reviewsData.reduce((sum, review) => sum + review.ratingStar, 0) / reviewsData.length).toFixed(1);
     
     // Calculate positive percentage (4+ stars)
-    const positiveReviews = reviewsData.filter(review => review.rating >= 4).length;
+    const positiveReviews = reviewsData.filter(review => review.ratingStar >= 4).length;
     const positivePercentage = Math.round((positiveReviews / reviewsData.length) * 100);
     
     // Update DOM elements
@@ -314,7 +510,7 @@ function updateReview() {
                 reviewsData[reviewIndex] = {
                     ...reviewsData[reviewIndex],
                     description: reviewData.description,
-                    rating: reviewData.rating
+                    ratingStar: reviewData.rating
                 };
                 populateReviewsTable();
                 
@@ -463,6 +659,7 @@ window.reviewsTableModule = {
 };
 
 // Make individual functions global for HTML onclick handlers
+window.loadReviewToForm = loadReviewToForm;
 window.editReview = editReview;
 window.deleteReview = deleteReview;
 window.submitReview = submitReviewEnhanced;
@@ -472,4 +669,66 @@ window.cancelEdit = cancelEdit;
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeReviewsTable();
+    initializeTooltips();
 });
+
+/**
+ * Initialize tooltips for review descriptions
+ */
+function initializeTooltips() {
+    let tooltip = null;
+    
+    // Create tooltip element
+    function createTooltip() {
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            document.body.appendChild(tooltip);
+        }
+        return tooltip;
+    }
+    
+    // Show tooltip
+    function showTooltip(element, text, event) {
+        const tooltipEl = createTooltip();
+        tooltipEl.textContent = text;
+        
+        // Position tooltip
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+        tooltipEl.style.left = (rect.left + scrollLeft) + 'px';
+        tooltipEl.style.top = (rect.top + scrollTop - tooltipEl.offsetHeight - 10) + 'px';
+        
+        // Show tooltip with animation
+        setTimeout(() => {
+            tooltipEl.classList.add('show');
+        }, 10);
+    }
+    
+    // Hide tooltip
+    function hideTooltip() {
+        if (tooltip) {
+            tooltip.classList.remove('show');
+        }
+    }
+    
+    // Delegate event listeners
+    document.addEventListener('mouseover', function(event) {
+        const target = event.target;
+        if (target.matches('.review-description, .suggestion-description')) {
+            const fullText = target.getAttribute('data-full-text') || target.title;
+            if (fullText && fullText !== target.textContent.trim()) {
+                showTooltip(target, fullText, event);
+            }
+        }
+    });
+    
+    document.addEventListener('mouseout', function(event) {
+        const target = event.target;
+        if (target.matches('.review-description, .suggestion-description')) {
+            hideTooltip();
+        }
+    });
+}
