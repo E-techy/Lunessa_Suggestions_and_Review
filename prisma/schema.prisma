@@ -19,10 +19,12 @@ model ReviewStats {
 
 
 /// Admin model for managing reviews
-model ReviewsAdmin {
+model Admin {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   username String @unique                          // 🔑 unique username
   apiKey   String
+  email    String @unique
+  phoneNumber String @unique
   role     String                                  // e.g. "admin", "moderator"
 
   // ⚠️ Removed @@index([username]) since @unique already indexes it
