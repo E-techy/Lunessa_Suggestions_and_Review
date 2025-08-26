@@ -7,6 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="main.css" rel="stylesheet">
     <!-- Separated JavaScript Modules -->
+    <script src="suggestion_sample_data.js"></script>
     <script src="utils/notifications.js" defer></script>
     <script src="utils/rating.js" defer></script>
     <script src="utils/fileUpload.js" defer></script>
@@ -253,14 +254,15 @@
                                 <label class="form-label">Issue Category</label>
                                 <select class="form-select" required>
                                     <option value="">Select issue type</option>
+                                    <option value="feature-request">Feature Enhancement</option>
                                     <option value="critical-bug">Critical System Bug</option>
                                     <option value="ui-ux">User Interface/Experience</option>
                                     <option value="performance">Performance Optimization</option>
-                                    <option value="api-integration">API Integration</option>
                                     <option value="security">Security Concern</option>
-                                    <option value="feature-request">Feature Enhancement</option>
-                                    <option value="documentation">Documentation</option>
                                     <option value="accessibility">Accessibility</option>
+                                    <option value="infrastructure">Infrastructure</option>
+                                    <option value="api-integration">API Integration</option>
+                                    <option value="documentation">Documentation</option>
                                 </select>
                             </div>
 
@@ -302,14 +304,13 @@
                                         <label style="font-weight: 500; color: #374151; font-size: 14px;">Category:</label>
                                         <select id="categoryFilter" class="form-select" style="width: 180px; padding: 6px 10px; font-size: 14px;" onchange="window.suggestionsTableModule.applyFilters()">
                                             <option value="">All Categories</option>
+                                            <option value="Feature Request">Feature Request</option>
                                             <option value="Critical Bug">Critical Bug</option>
                                             <option value="UI/UX">UI/UX</option>
                                             <option value="Performance">Performance</option>
-                                            <option value="API Integration">API Integration</option>
                                             <option value="Security">Security</option>
-                                            <option value="Feature Request">Feature Request</option>
-                                            <option value="Documentation">Documentation</option>
                                             <option value="Accessibility">Accessibility</option>
+                                            <option value="Infrastructure">Infrastructure</option>
                                         </select>
                                     </div>
                                     
