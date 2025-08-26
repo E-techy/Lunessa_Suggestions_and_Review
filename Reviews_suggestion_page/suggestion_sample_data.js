@@ -180,6 +180,41 @@ const suggestionSampleData = [
     suggestionStatus: "pending",
     accepted: false,
     acceptedAt: null
+  },
+  {
+    id: "507f1f77bcf86cd799439019",
+    suggestionId: "SUG-2025-009",
+    username: "performance_expert",
+    name: "Maria Gonzalez",
+    createdAt: "2025-08-12T15:20:00Z",
+    lastModified: "2025-08-15T10:45:00Z",
+    suggestionCategory: "performance",
+    suggestionDescription: "Implement caching layer for frequently accessed API endpoints to reduce response times by 60%.",
+    files: [
+      {
+        id: "file_011",
+        filename: "caching_strategy.pdf",
+        url: "https://example.com/files/caching_strategy.pdf",
+        uploadedAt: "2025-08-12T15:25:00Z"
+      }
+    ],
+    suggestionStatus: "active",
+    accepted: true,
+    acceptedAt: "2025-08-15T10:45:00Z"
+  },
+  {
+    id: "507f1f77bcf86cd799439020",
+    suggestionId: "SUG-2025-010",
+    username: "ui_architect",
+    name: "Kevin Zhang",
+    createdAt: "2025-08-11T09:15:00Z",
+    lastModified: "2025-08-14T16:30:00Z",
+    suggestionCategory: "ui_improvement",
+    suggestionDescription: "Redesign the notification system with real-time updates and better visual hierarchy for improved user experience.",
+    files: [],
+    suggestionStatus: "active",
+    accepted: true,
+    acceptedAt: "2025-08-14T16:30:00Z"
   }
 ];
 
@@ -232,7 +267,8 @@ const suggestionStats = {
   byStatus: {
     live: suggestionSampleData.filter(s => s.suggestionStatus === 'live').length,
     pending: suggestionSampleData.filter(s => s.suggestionStatus === 'pending').length,
-    completed: suggestionSampleData.filter(s => s.suggestionStatus === 'completed').length
+    completed: suggestionSampleData.filter(s => s.suggestionStatus === 'completed').length,
+    active: suggestionSampleData.filter(s => s.suggestionStatus === 'active').length
   },
   byCategory: {
     feature_request: suggestionSampleData.filter(s => s.suggestionCategory === 'feature_request').length,

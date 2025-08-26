@@ -27,7 +27,8 @@ window.suggestionsTableModule = (function() {
         const statusMap = {
             'live': 'progress',
             'pending': 'pending',
-            'completed': 'resolved'
+            'completed': 'resolved',
+            'active': 'progress'
         };
 
         return suggestionData.map((item, index) => ({
@@ -401,13 +402,18 @@ window.suggestionsTableModule = (function() {
                     <td>
                         <span class="suggestion-date">${formattedDate}</span>
                     </td>
-                    <td>
-                        <button class="btn btn-small btn-secondary" onclick="window.suggestionsTableModule.editSuggestion('${suggestion.id}')" title="Edit Suggestion">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-small btn-danger" onclick="window.suggestionsTableModule.deleteSuggestion('${suggestion.id}')" title="Delete Suggestion">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    <td class="actions-column">
+                        ${suggestion.status === 'pending' ? `
+                            <button class="btn btn-small btn-secondary" onclick="window.suggestionsTableModule.editSuggestion('${suggestion.id}')" title="Edit Suggestion">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small btn-danger" onclick="window.suggestionsTableModule.deleteSuggestion('${suggestion.id}')" title="Delete Suggestion">
+                                <i class="fas fa-trash"></i>
+                            </button>` : `
+                            <span class="no-actions" title="Actions only available for pending suggestions">
+                                <i class="fas fa-lock" style="color: #9ca3af; font-size: 14px;"></i>
+                                <span style="color: #9ca3af; font-size: 12px; margin-left: 4px;">Read Only</span>
+                            </span>`}
                     </td>
                 </tr>
             `;
