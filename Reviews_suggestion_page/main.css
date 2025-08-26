@@ -74,6 +74,10 @@
     line-height: 1.5;
     cursor: default;
     position: relative;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .review-description:hover {
@@ -105,20 +109,101 @@
 }
 
 .btn-small {
-    padding: 6px 12px;
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--secondary);
+    color: var(--text-light);
     margin-right: 8px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
 }
 
-.btn-small:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
+.btn-small svg,
 .btn-small i {
-    margin-right: 4px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+/* Edit button hover styles */
+.btn-small.edit-btn:hover,
+.btn-small[onclick*="editReview"]:hover,
+.btn-small[onclick*="editSuggestion"]:hover {
+    background: var(--accent-100);
+    border-color: var(--accent);
+    color: var(--accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Action buttons in table cells - ensure they stay on one line */
+.reviews-table td:last-child,
+.suggestions-table td:last-child {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Position relative for tooltip containers */
+.reviews-table td:first-child,
+.suggestions-table td:nth-child(2) {
+    position: relative;
+}
+
+.reviews-table .btn-small,
+.suggestions-table .btn-small {
+    margin-right: 0; /* Remove margin since we're using gap */
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+/* Delete button hover styles */
+.btn-small.delete-btn:hover,
+.btn-small[onclick*="deleteReview"]:hover,
+.btn-small[onclick*="deleteSuggestion"]:hover {
+    background: var(--error-100);
+    color: var(--error-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Action button classes for explicit styling */
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--secondary);
+    color: var(--text-light);
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.edit-btn:hover {
+    background: var(--accent-100);
+    color: var(--accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.delete-btn:hover {
+    background: var(--error-100);
+    color: var(--error-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 /* Editing Mode Styles */
@@ -242,8 +327,6 @@
     color: #1f2937;
     text-decoration: underline;
     text-decoration-style: dotted;
-    white-space: normal;
-    overflow: visible;
 }
 
 .suggestion-status {
@@ -282,10 +365,78 @@
 }
 
 .suggestions-table tbody:empty::after {
-    content: "No suggestions submitted yet. Use the form above to submit your first suggestion.";
+    content: "No suggestions match your filters. Try adjusting your search criteria or clear filters to see all suggestions.";
     display: block;
     text-align: center;
     padding: 40px 20px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Empty state when no suggestions exist at all */
+.suggestions-table.no-data tbody:empty::after {
+    content: "No suggestions submitted yet. Use the form above to submit your first suggestion.";
+}
+
+/* Filters Panel Styles */
+.filters-panel {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 12px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.filters-panel:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filters-panel label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.filters-panel .form-select,
+.filters-panel .form-input {
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.filters-panel .form-select:focus,
+.filters-panel .form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.filters-panel .btn-secondary {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filters-panel .btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Filter results count */
+.filter-results {
+    margin-top: 8px;
+    font-size: 12px;
     color: #6b7280;
     font-style: italic;
 }
@@ -315,4 +466,67 @@
     .suggestion-description {
         max-width: 200px;
     }
+    
+    /* Responsive filters panel */
+    .filters-panel > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    
+    .filters-panel > div > div {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .filters-panel .form-select,
+    .filters-panel .form-input {
+        width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .filters-panel .btn-secondary {
+        width: 100%;
+        margin-top: 8px;
+    }
+}
+
+/* Custom JavaScript Tooltip Styles */
+.custom-tooltip {
+    position: absolute;
+    background: #ffffff;
+    color: #374151;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
+    z-index: 1000;
+    max-width: 400px;
+    min-width: 250px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+}
+
+.custom-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.custom-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
 }
