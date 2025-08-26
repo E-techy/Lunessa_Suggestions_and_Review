@@ -86,6 +86,7 @@ model Suggestion {
   files                 File[]  
   suggestionStatus      String   // e.g. "live", "completed", "pending"
   accepted              Boolean  @default(false)
+  acceptedAt            DateTime?
 
   // ⚠️ Removed @@index([suggestionId]) since it's already @unique
   @@index([username], map: "idx_suggestion_username")           // 🔥 fast search by username
@@ -99,10 +100,8 @@ model LiveSuggestion {
   suggestionId   String   @unique                        // 🔑 unique suggestion identifier
   createdAt      DateTime @default(now())
   acceptedAt     DateTime?
-  resolutionDate DateTime?
 
   @@index([createdAt], map: "idx_live_createdAt")           // fast recent/older queries
-  @@index([resolutionDate], map: "idx_live_resolutionDate") // fast search by resolution date
   // ⚠️ Removed @@index([suggestionId]) since it's already @unique
 }
 

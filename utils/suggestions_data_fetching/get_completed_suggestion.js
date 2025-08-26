@@ -57,7 +57,6 @@ async function getCompletedSuggestions({ timestamp = null, filterType = "latest"
 
       return {
         ...restSuggestion,
-        acceptedAt: cs.acceptedAt,
         resolutionDate: cs.resolutionDate,
       };
     }).filter(Boolean);
@@ -70,3 +69,4 @@ async function getCompletedSuggestions({ timestamp = null, filterType = "latest"
 }
 
 module.exports = getCompletedSuggestions;
+
