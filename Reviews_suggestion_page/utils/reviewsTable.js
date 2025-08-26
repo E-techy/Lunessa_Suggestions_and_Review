@@ -28,7 +28,13 @@ let reviewsData = [
         description: "Perfect solution for our enterprise needs",
         date: "2025-01-22",
         rating: 5
-    }
+    },
+    {
+        id: 5,
+        description: "Perfect solution for our enterprise needs",
+        date: "2025-01-22",
+        rating: 5
+    },
 ];
 
 let currentEditingId = null;
