@@ -63,6 +63,99 @@ function switchSidebarTab(sectionName, tabType) {
     }
 }
 
+// Filter functionality for Active Issues section
+function filterActiveIssues(filterValue) {
+    const pendingItems = document.querySelectorAll('#active-issues-pending .status-item');
+    const activeItems = document.querySelectorAll('#active-issues-active .status-item');
+    
+    // Sort pending items
+    sortStatusItems(pendingItems, filterValue);
+    // Sort active items
+    sortStatusItems(activeItems, filterValue);
+}
+
+// Filter functionality for Resolved & Implemented section
+function filterResolvedImplemented(filterValue) {
+    const liveItems = document.querySelectorAll('#resolved-implemented-live .status-item');
+    const completedItems = document.querySelectorAll('#resolved-implemented-completed .status-item');
+    
+    // Sort live items
+    sortStatusItems(liveItems, filterValue);
+    // Sort completed items
+    sortStatusItems(completedItems, filterValue);
+}
+
+// Helper function to sort status items by date
+function sortStatusItems(items, filterValue) {
+    if (!items || items.length === 0) return;
+    
+    const itemsArray = Array.from(items);
+    const parent = items[0].parentNode;
+    
+    // Extract date from each item and sort
+    itemsArray.sort((a, b) => {
+        const dateA = extractDateFromStatusItem(a);
+        const dateB = extractDateFromStatusItem(b);
+        
+        if (filterValue === 'latest') {
+            return dateB - dateA; // Newest first
+        } else {
+            return dateA - dateB; // Oldest first
+        }
+    });
+    
+    // Re-append items in new order
+    itemsArray.forEach(item => {
+        parent.appendChild(item);
+    });
+    
+    // Add visual feedback
+    parent.style.opacity = '0.7';
+    setTimeout(() => {
+        parent.style.opacity = '1';
+    }, 200);
+}
+
+// Extract date from status item
+function extractDateFromStatusItem(item) {
+    const dateElement = item.querySelector('.status-date');
+    if (!dateElement) return new Date(0);
+    
+    const dateText = dateElement.textContent;
+    // Extract date from text like "Submitted: Aug 18, 2025" or "Started: Aug 15, 2025"
+    const dateMatch = dateText.match(/(\w{3} \d{1,2}, \d{4})/);
+    if (dateMatch) {
+        return new Date(dateMatch[1]);
+    }
+    
+    // Fallback: extract from "Deployed:" or "Completed:" format
+    const deployedMatch = dateText.match(/(Deployed|Completed): (\w{3} \d{1,2}, \d{4})/);
+    if (deployedMatch) {
+        return new Date(deployedMatch[2]);
+    }
+    
+    return new Date(0);
+}
+
+// Initialize filters on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial filter values
+    const activeIssuesFilter = document.getElementById('activeIssuesFilter');
+    const resolvedImplementedFilter = document.getElementById('resolvedImplementedFilter');
+    
+    if (activeIssuesFilter) {
+        activeIssuesFilter.value = 'latest';
+        filterActiveIssues('latest');
+    }
+    
+    if (resolvedImplementedFilter) {
+        resolvedImplementedFilter.value = 'latest';
+        filterResolvedImplemented('latest');
+    }
+});
+
 // Make functions available globally
 window.switchTab = switchTab;
 window.switchSidebarTab = switchSidebarTab;
+window.filterActiveIssues = filterActiveIssues;
+window.filterResolvedImplemented = filterResolvedImplemented;

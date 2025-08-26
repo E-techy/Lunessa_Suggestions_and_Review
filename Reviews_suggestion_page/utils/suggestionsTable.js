@@ -412,7 +412,6 @@ window.suggestionsTableModule = (function() {
                             </button>` : `
                             <span class="no-actions" title="Actions only available for pending suggestions">
                                 <i class="fas fa-lock" style="color: #9ca3af; font-size: 14px;"></i>
-                                <span style="color: #9ca3af; font-size: 12px; margin-left: 4px;">Read Only</span>
                             </span>`}
                     </td>
                 </tr>

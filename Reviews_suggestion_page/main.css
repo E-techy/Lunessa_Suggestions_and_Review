@@ -288,7 +288,6 @@
 }
 
 .suggestions-table th {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
     font-weight: 600;
     font-size: 14px;
@@ -465,6 +464,12 @@
     font-style: italic;
 }
 
+/* Ensure sidebar tabs maintain proper styling */
+.sidebar-tabs .sidebar-tab-btn {
+    flex: 1;
+    min-width: auto;
+}
+
 /* Responsive table styles */
 @media (max-width: 768px) {
     .reviews-table,
@@ -530,6 +535,92 @@
     }
 }
 
+/* Badge styles for Load More content */
+.badge-enhancement,
+.badge-feature-request {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-critical-bug {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-development,
+.badge-design-review {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-live-&-secured,
+.badge-live-production {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-performance-optimized,
+.badge-ui/ux-completed {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+/* Priority classes */
+.priority-low {
+    color: #059669;
+    background: #d1fae5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.priority-medium {
+    color: #d97706;
+    background: #fef3c7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.priority-critical {
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Animation for newly loaded items */
+.review-item,
+.status-item {
+    transition: all 0.3s ease;
+}
+
+/* No more items message */
+.no-more-items {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.8rem;
+    padding: 8px;
+    font-style: italic;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Custom JavaScript Tooltip Styles */
 .custom-tooltip {
     position: absolute;
@@ -568,4 +659,67 @@
     border-top: none;
     border-left: none;
     transform: rotate(45deg);
+}
+
+/* Filter Dropdown Styles for Sidebar */
+.sidebar-tabs-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.sidebar-tabs {
+    gap: 8px;
+}
+
+.filter-dropdown {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 20px;
+    padding: 4px;
+}
+
+.filter-select {
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 80px;
+    font-weight: 500;
+}
+
+.filter-select:hover {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Responsive adjustments for filter dropdown */
+@media (max-width: 768px) {
+    .sidebar-tabs-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .filter-dropdown {
+        justify-content: center;
+    }
+    
+    .filter-select {
+        width: 100%;
+        max-width: 120px;
+    }
 }

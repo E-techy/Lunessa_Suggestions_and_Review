@@ -102,7 +102,7 @@
 
 /* Sidebar Tab Styles */
 .sidebar-tabs {
-    display: flex;
+    display: inline-flex;
     gap: 4px;
     margin-bottom: 20px;
     padding: 4px;

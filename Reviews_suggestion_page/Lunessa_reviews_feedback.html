@@ -16,6 +16,7 @@
     <script src="utils/suggestionsTable.js" defer></script>
     <script src="utils/tabs.js" defer></script>
     <script src="utils/animations.js" defer></script>
+    <script src="utils/loadMore.js" defer></script>
     <script src="utils/main.js" defer></script>
 </head>
 <body>
@@ -253,6 +254,14 @@
                                     <div class="review-date">2023-11-15</div>
                                 </div>
                             </div>
+                            
+                            <!-- Load More Button for Top-Rated Reviews -->
+                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="btn-load-more" onclick="loadMoreTopRatedReviews()">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More 
+                                </button>
+                            </div>
                         </div>
 
                         <div class="sidebar-section">
@@ -350,6 +359,14 @@
                                     <div class="review-date">2024-01-01</div>
                                 </div>
                             </div>
+                            
+                            <!-- Load More Button for Recent Feedback -->
+                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="btn-load-more" onclick="loadMoreRecentFeedback()">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -363,15 +380,23 @@
                             <i class="fas fa-hourglass-half"></i>
                             Active Issues
                         </h4>
-                        <div class="sidebar-tabs">
-                            <button class="sidebar-tab-btn active" onclick="switchSidebarTab('active-issues', 'pending')">
-                                <i class="fas fa-clock"></i>
-                                Pending
-                            </button>
-                            <button class="sidebar-tab-btn" onclick="switchSidebarTab('active-issues', 'active')">
-                                <i class="fas fa-cog"></i>
-                                Active
-                            </button>
+                        <div class="sidebar-tabs-container">
+                            <div class="sidebar-tabs">
+                                <button class="sidebar-tab-btn active" onclick="switchSidebarTab('active-issues', 'pending')">
+                                    <i class="fas fa-clock"></i>
+                                    Pending
+                                </button>
+                                <button class="sidebar-tab-btn" onclick="switchSidebarTab('active-issues', 'active')">
+                                    <i class="fas fa-cog"></i>
+                                    Active
+                                </button>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select class="filter-select" id="activeIssuesFilter" onchange="filterActiveIssues(this.value)">
+                                    <option value="latest">Latest</option>
+                                    <option value="oldest">Oldest</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <!-- Pending Active Issues -->
@@ -452,23 +477,38 @@
                                     <span class="status-progress">Progress: 30%</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
+                                
+                            
+                        </div><!-- Load More Button for Active Issues -->
+                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="btn-load-more" onclick="loadMoreActiveIssues()">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
+                            </div>
+            </div>
+            <div class="sidebar-section">
                         <h4 class="sidebar-title">
                             <i class="fas fa-check-circle"></i>
                             Resolved & Implemented
                         </h4>
-                        <div class="sidebar-tabs">
-                            <button class="sidebar-tab-btn active" onclick="switchSidebarTab('resolved-implemented', 'live')">
-                                <i class="fas fa-broadcast-tower"></i>
-                                Live
-                            </button>
-                            <button class="sidebar-tab-btn" onclick="switchSidebarTab('resolved-implemented', 'completed')">
-                                <i class="fas fa-check-double"></i>
-                                Completed
-                            </button>
+                        <div class="sidebar-tabs-container">
+                            <div class="sidebar-tabs">
+                                <button class="sidebar-tab-btn active" onclick="switchSidebarTab('resolved-implemented', 'live')">
+                                    <i class="fas fa-broadcast-tower"></i>
+                                    Live
+                                </button>
+                                <button class="sidebar-tab-btn" onclick="switchSidebarTab('resolved-implemented', 'completed')">
+                                    <i class="fas fa-check-double"></i>
+                                    Completed
+                                </button>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select class="filter-select" id="resolvedImplementedFilter" onchange="filterResolvedImplemented(this.value)">
+                                    <option value="latest">Latest</option>
+                                    <option value="oldest">Oldest</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <!-- Live Features -->
@@ -549,10 +589,18 @@
                                     <span class="status-certification">WCAG 2.1 AA Certified</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                                
+                            <!-- Load More Button for Resolved & Implemented -->
+                            
+                        </div><div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="btn-load-more" onclick="loadMoreResolvedImplemented()">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
+                            </div>
                 </div>
-                <div class="suggestions-grid">
+        </div>
+        <div class="suggestions-grid">
                     <div class="form-section">
                         <h3 class="section-title">
                             <i class="fas fa-bug"></i>
@@ -655,7 +703,7 @@
                         </div>
                         <div class="suggestions-table-container">
                             <table class="suggestions-table">
-                                <thead>
+                                <thead style="background: linear-gradient(135deg, var(--accent), #7C3AED);">
                                     <tr>
                                         <th><i class="fas fa-tag"></i> Category</th>
                                         <th><i class="fas fa-comment-alt"></i> Description</th>
@@ -670,10 +718,6 @@
                             </table>
                         </div>
                     </div>
-
-                
-            </div>
-        </div>
     </div>
 </body>
 </html>
