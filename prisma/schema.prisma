@@ -7,17 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// ---------------- REVIEWS ----------------
-
-/// Global statistics (only a single object stored here)
-model ReviewStats {
-  id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  averageRating  Float
-  totalReviews   Int
-  positivityLevel Float   // value 0 - 100
-}
-
-
 /// Admin model for managing reviews
 model Admin {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
@@ -29,6 +18,19 @@ model Admin {
 
   // ⚠️ Removed @@index([username]) since @unique already indexes it
 }
+
+/// ---------------- REVIEWS ----------------
+
+/// Global statistics (only a single object stored here)
+model ReviewStats {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  averageRating  Float
+  totalReviews   Int
+  positivityLevel Float   // value 0 - 100
+}
+
+
+
 
 /// Individual Review documents
 model Review {
