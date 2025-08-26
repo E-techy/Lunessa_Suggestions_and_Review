@@ -102,8 +102,8 @@ model Suggestion {
 model LiveSuggestion {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   suggestionId   String   @unique                        // 🔑 unique suggestion identifier
-  createdAt      DateTime @default(now())
-  acceptedAt     DateTime?
+  createdAt      DateTime 
+  acceptedAt     DateTime
 
   @@index([createdAt], map: "idx_live_createdAt")           // fast recent/older queries
   // ⚠️ Removed @@index([suggestionId]) since it's already @unique
@@ -113,9 +113,9 @@ model LiveSuggestion {
 model CompletedSuggestion {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   suggestionId   String   @unique                        // 🔑 unique suggestion identifier
-  createdAt      DateTime @default(now())
-  acceptedAt     DateTime?
-  resolutionDate DateTime?
+  createdAt      DateTime 
+  acceptedAt     DateTime
+  resolutionDate DateTime? @default(now())
 
   @@index([createdAt], map: "idx_completed_createdAt")           // fast recent/older queries
   @@index([resolutionDate], map: "idx_completed_resolutionDate") // fast search by resolution date
