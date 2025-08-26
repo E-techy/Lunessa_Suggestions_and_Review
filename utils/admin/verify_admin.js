@@ -71,4 +71,4 @@ async function verifyAdmin(apiKey, authToken, jwtSecret) {
   }
 }
 
-module.exports = { verifyAdmin };
+module.exports = verifyAdmin;
