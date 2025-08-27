@@ -7,18 +7,26 @@ const prisma = new PrismaClient();
  * Deletes a review from Review + TopReview,
  * and updates ReviewStats accordingly.
  *
+ * Only deletes if the review belongs to the given username.
+ *
  * @param {string} reviewID - ID of the review to delete.
+ * @param {string} username - Owner of the review (must match).
  * @returns {Promise<{ success: boolean, error?: string }>}
  */
-async function deleteReview(reviewID) {
+async function deleteReview(reviewID, username) {
   try {
-    // 1. Find the review first
+    // 1. Find the review first, but enforce username check
     const review = await prisma.Review.findUnique({
       where: { reviewID },
     });
 
     if (!review) {
       return { success: false, error: "Review not found" };
+    }
+
+    // Ownership check
+    if (review.username !== username) {
+      return { success: false, error: "Not authorized to delete this review" };
     }
 
     // Extract values before deletion

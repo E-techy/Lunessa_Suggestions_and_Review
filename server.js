@@ -11,6 +11,13 @@ const addSuggestion = require("./utils/add_suggestion");
 const formatSuggestion = require("./utils/format_suggestion");
 const modifySuggestion = require("./utils/modify_suggestion");
 
+const findYourReviews = require("./utils/find_your_reviews");
+const authenticateUser = require("./utils/authenticate_user");
+
+const deleteReview = require("./utils/delete_review");
+
+const modifyReview = require("./utils/modify_review");
+
 
 
 const app = express();
@@ -130,7 +137,82 @@ app.post("/review", async (req, res) => {
   }
 });
 
+// fetch your reviews 
+app.post("/get_your_reviews", authenticateUser, async (req, res) => {
+  try {
+    const { username, userType } = req.body;
 
+    // If user is not authenticated
+    if (username === "Anonymous") {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized. Please login to fetch your reviews.",
+        reviews: [],
+      });
+    }
+
+    // Fetch reviews from DB
+    const result = await findYourReviews(username);
+
+    if (result.success) {
+      return res.json(result);
+    } else {
+      return res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error("❌ Error in /get_your_reviews:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while fetching reviews.",
+      reviews: [],
+    });
+  }
+});
+
+// delete your review
+app.post("/delete_your_review", authenticateUser, async (req, res) => {
+  try {
+    const { reviewID } = req.body;
+    const { username, userType } = req.body;
+
+    // Check authentication first
+    if (userType !== "authenticUser" || !username || username === "Anonymous") {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized. Please login with a valid account.",
+      });
+    }
+
+    // Check for reviewID presence
+    if (!reviewID || typeof reviewID !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "A valid reviewID must be provided.",
+      });
+    }
+
+    // Attempt to delete review
+    const result = await deleteReview(reviewID, username);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.error || "Failed to delete review.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Review deleted successfully.",
+    });
+  } catch (error) {
+    console.error("❌ Error in /delete_your_review:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while deleting review.",
+    });
+  }
+});
 
 // add or modify suggestion 
 app.post("/suggestion", async (req, res) => {
