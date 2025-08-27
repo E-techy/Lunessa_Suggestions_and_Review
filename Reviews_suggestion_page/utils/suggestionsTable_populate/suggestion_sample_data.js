@@ -285,7 +285,7 @@ const suggestionStats = {
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
+  module.exports = {  
     suggestionSampleData,
     suggestionHelpers,
     suggestionStats
