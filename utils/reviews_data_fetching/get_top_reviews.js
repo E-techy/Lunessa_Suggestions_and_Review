@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
  * - { success: true, reviews: [...] } if fetched successfully
  * - { success: false } if an error occurred
  */
-async function getTopReviews(timestamp, type) {
+async function getTopReviews(timestamp, type= "latest") {
   try {
     let whereCondition = {};
     let orderCondition = {};

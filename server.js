@@ -5,6 +5,12 @@ const reviewStats = require("./utils/reviews_data_fetching/get_review_stats");
 const jwt = require("jsonwebtoken");
 const formatReview = require("./utils/format_review");
 const addReview = require("./utils/add_review");
+const getTopReviews = require("./utils/reviews_data_fetching/get_top_reviews");
+
+const addSuggestion = require("./utils/add_suggestion");
+const formatSuggestion = require("./utils/format_suggestion");
+const modifySuggestion = require("./utils/modify_suggestion");
+
 
 
 const app = express();
@@ -39,8 +45,7 @@ app.post("/review_stats", async(req, res)=>{
 
 
 
-// add or modify review
-
+// add or modify review 
 app.post("/review", async (req, res) => {
   const { action } = req.query;
 
@@ -96,11 +101,26 @@ app.post("/review", async (req, res) => {
     }
 
     if (action === "modify") {
-      // TODO: implement modify flow here (intentionally left blank for now)
-      return res.status(501).json({
-        success: false,
-        error: "Modify action not implemented yet",
-      });
+      const { reviewID, comment, ratingStar, files } = req.body || {};
+
+      if (!reviewID) {
+        return res.status(400).json({
+          success: false,
+          error: "Missing 'reviewID' for modification",
+        });
+      }
+
+      // Attempt modification
+      const result = await modifyReview(reviewID, username, { comment, ratingStar, files }, modelName, apiKey);
+
+      if (!result.success) {
+        return res.status(400).json({
+          success: false,
+          error: result.error || "Failed to modify review",
+        });
+      }
+
+      return res.json({ success: true, message: "Review modified successfully" });
     }
 
     return res.status(400).json({ success: false, error: "Invalid 'action' value" });
@@ -110,6 +130,134 @@ app.post("/review", async (req, res) => {
   }
 });
 
+
+
+// add or modify suggestion 
+app.post("/suggestion", async (req, res) => {
+  const { action } = req.query;
+
+  if (!action) {
+    return res.status(400).json({ success: false, error: "Missing 'action' query parameter" });
+  }
+
+  try {
+    // --- Extract & verify authToken from cookies (credentials: 'include') ---
+    const token = req.cookies?.authToken;
+    let username = null;
+    let name = null;
+
+    if (token && jwtSecret) {
+      try {
+        const decoded = jwt.verify(token, jwtSecret); // ✅ verify signature
+        username = decoded?.username ?? null;
+        name = decoded?.name ?? null;
+      } catch (e) {
+        // Invalid token → proceed as anonymous
+        console.warn("Invalid authToken supplied. Proceeding as anonymous. Reason:", e.message);
+      }
+    } else if (token && !jwtSecret) {
+      console.warn("JWT_SECRET_KEY not set; cannot verify token. Proceeding as anonymous.");
+    }
+
+    // --- Handle different actions ---
+    if (action === "create") {
+      const { suggestionCategory, suggestionDescription, files } = req.body || {};
+
+      // Step 1: Build raw suggestion
+      const rawSuggestion = { username, name, suggestionCategory, suggestionDescription, files };
+
+      // Step 2: Format suggestion
+      const { formattedSuggestion, error: formatError } = await formatSuggestion(rawSuggestion);
+      if (formatError || !formattedSuggestion) {
+        return res.status(400).json({
+          success: false,
+          error: formatError || "Failed to format suggestion",
+        });
+      }
+
+      // Step 3: Persist suggestion
+      const added = await addSuggestion(formattedSuggestion);
+      if (!added) {
+        return res.status(500).json({
+          success: false,
+          error: "Failed to add suggestion. Please try again later.",
+        });
+      }
+
+      return res.json({ success: true, message: "Suggestion added successfully" });
+    }
+
+    if (action === "modify") {
+      const { suggestionId, suggestionCategory, suggestionDescription, files } = req.body || {};
+
+      if (!suggestionId) {
+        return res.status(400).json({ success: false, error: "Missing suggestionId for modification" });
+      }
+
+      // Step 1: Build modified suggestion
+      const modifiedSuggestion = { suggestionCategory, suggestionDescription, files };
+
+      // Step 2: Attempt modification
+      const result = await modifySuggestion({ suggestionId, username, modifiedSuggestion });
+
+      if (!result.success) {
+        return res.status(400).json({ success: false, error: result.message });
+      }
+
+      return res.json({
+        success: true,
+        message: result.message,
+        suggestion: result.suggestion,
+      });
+    }
+
+    return res.status(400).json({ success: false, error: "Invalid 'action' value" });
+  } catch (err) {
+    console.error("❌ Error in /suggestion:", err);
+    return res.status(500).json({ success: false, error: "Unexpected server error" });
+  }
+});
+
+
+// Sending the top rated reviews 
+app.post("/top_rated", async (req, res) => {
+  try {
+    let { timestamp, type } = req.query;
+
+    // ✅ Handle timestamp validation
+    let parsedTimestamp = null;
+    if (timestamp) {
+      const date = new Date(timestamp);
+      if (!isNaN(date.getTime())) {
+        parsedTimestamp = date; // valid date
+      } else {
+        console.warn("⚠️ Invalid timestamp provided. Falling back to default.");
+        parsedTimestamp = null; // or new Date(0) if you want "from beginning"
+      }
+    }
+
+    // ✅ Call utility function with sanitized inputs
+    const result = await getTopReviews(parsedTimestamp, type);
+
+    if (result.success) {
+      return res.json({
+        success: true,
+        data: result.reviews,
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        error: "Failed to fetch top reviews",
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error in /top_rated route:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Internal server error",
+    });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
