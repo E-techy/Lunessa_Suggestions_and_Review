@@ -18,6 +18,9 @@ const deleteReview = require("./utils/delete_review");
 
 const modifyReview = require("./utils/modify_review");
 
+const getLatestReviews = require("./utils/reviews_data_fetching/get_latest_reviews");
+const getOldestReviews = require("./utils/reviews_data_fetching/get_oldest_reviews");
+
 
 
 const app = express();
@@ -137,6 +140,54 @@ app.post("/review", async (req, res) => {
   }
 });
 
+
+// fetch normal reviews
+app.post("/normal_review", async (req, res) => {
+  try {
+    const { type, timestamp } = req.query;
+    console.log(type, timestamp);
+    
+
+    // Validate type
+    if (!type || !["latest", "oldest"].includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or missing type. Must be 'latest' or 'oldest'.",
+      });
+    }
+
+    // ✅ Sanitize timestamp: null if missing/invalid
+    let ts = null;
+    if (timestamp && timestamp !== "null" && !isNaN(Date.parse(timestamp))) {
+      ts = new Date(timestamp);
+    }
+
+    let result;
+    if (type === "latest") {
+      result = await getLatestReviews(ts);
+      
+    } else {
+      result = await getOldestReviews(ts);
+    }
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch reviews.",
+      });
+    }
+ console.log(result);
+    return res.json(result);
+  } catch (error) {
+    console.error("❌ Error in /normal_review:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while fetching reviews.",
+    });
+  }
+});
+
+
 // fetch your reviews 
 app.post("/get_your_reviews", authenticateUser, async (req, res) => {
   try {
@@ -168,6 +219,47 @@ app.post("/get_your_reviews", authenticateUser, async (req, res) => {
     });
   }
 });
+
+// Sending the top rated reviews 
+app.post("/top_rated", async (req, res) => {
+  try {
+    let { timestamp, type } = req.query;
+
+    // ✅ Handle timestamp validation
+    let parsedTimestamp = null;
+    if (timestamp) {
+      const date = new Date(timestamp);
+      if (!isNaN(date.getTime())) {
+        parsedTimestamp = date; // valid date
+      } else {
+        console.warn("⚠️ Invalid timestamp provided. Falling back to default.");
+        parsedTimestamp = null; // or new Date(0) if you want "from beginning"
+      }
+    }
+
+    // ✅ Call utility function with sanitized inputs
+    const result = await getTopReviews(parsedTimestamp, type);
+
+    if (result.success) {
+      return res.json({
+        success: true,
+        data: result.reviews,
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        error: "Failed to fetch top reviews",
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error in /top_rated route:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Internal server error",
+    });
+  }
+});
+
 
 // delete your review
 app.post("/delete_your_review", authenticateUser, async (req, res) => {
@@ -301,45 +393,6 @@ app.post("/suggestion", async (req, res) => {
 });
 
 
-// Sending the top rated reviews 
-app.post("/top_rated", async (req, res) => {
-  try {
-    let { timestamp, type } = req.query;
-
-    // ✅ Handle timestamp validation
-    let parsedTimestamp = null;
-    if (timestamp) {
-      const date = new Date(timestamp);
-      if (!isNaN(date.getTime())) {
-        parsedTimestamp = date; // valid date
-      } else {
-        console.warn("⚠️ Invalid timestamp provided. Falling back to default.");
-        parsedTimestamp = null; // or new Date(0) if you want "from beginning"
-      }
-    }
-
-    // ✅ Call utility function with sanitized inputs
-    const result = await getTopReviews(parsedTimestamp, type);
-
-    if (result.success) {
-      return res.json({
-        success: true,
-        data: result.reviews,
-      });
-    } else {
-      return res.status(500).json({
-        success: false,
-        error: "Failed to fetch top reviews",
-      });
-    }
-  } catch (error) {
-    console.error("❌ Error in /top_rated route:", error);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Internal server error",
-    });
-  }
-});
 
 // Start server
 app.listen(PORT, () => {

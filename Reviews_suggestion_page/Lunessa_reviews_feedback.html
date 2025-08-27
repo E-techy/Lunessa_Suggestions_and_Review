@@ -196,63 +196,49 @@
                         </div>
                     </div>
 
+                    <!-- 📌 Normal Reviews Sidebar -->
 
-                        <div class="sidebar-section">
-                            <h4 class="sidebar-title">
-                                <i class="fas fa-clock"></i>
-                                Recent Feedback
-                            </h4>
-                            <div class="sidebar-tabs">
-                                <button class="sidebar-tab-btn active">
-                                    <i class="fas fa-arrow-up"></i>
-                                    Latest
-                                </button>
-                                <button class="sidebar-tab-btn">
-                                    <i class="fas fa-arrow-down"></i>
-                                    Oldest
-                                </button>
-                            </div>
-                            
-                            <!-- Latest Recent Feedback -->
-                            <div id="recent-feedback-latest" class="sidebar-tab-content active">
-                                <div class="review-item">
-                                    <div class="review-author">Emily Rodriguez</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star">★</span>
-                                    </div>
-                                    <div class="review-preview">Professional service with room for improvement in multilingual support. Overall performance meets enterprise standards...</div>
-                                    <div class="review-date">2024-01-20</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Oldest Recent Feedback -->
-                            <div id="recent-feedback-oldest" class="sidebar-tab-content">
-                                <div class="review-item">
-                                    <div class="review-author">Sarah Chen</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star">★</span>
-                                        <span class="star">★</span>
-                                    </div>
-                                    <div class="review-preview">The service was okay, nothing extraordinary but met basic expectations. Response time could be improved...</div>
-                                    <div class="review-date">2024-01-05</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Load More Button for Recent Feedback -->
-                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                                <button class="btn-load-more">
-                                    <i class="fas fa-chevron-down"></i>
-                                    Load More
-                                </button>
-                            </div>
-                        </div>
+                    <div class="normal-reviews-section">
+  <h4 class="normal-reviews-title">
+    <i class="fas fa-comments"></i>
+    Normal Reviews
+  </h4>
+
+  <!-- Tabs -->
+  <div class="normal-reviews-tabs">
+    <button class="normal-tab-btn active" data-tab="latest">
+      <i class="fas fa-arrow-up"></i>
+      Latest
+    </button>
+    <button class="normal-tab-btn" data-tab="oldest">
+      <i class="fas fa-arrow-down"></i>
+      Oldest
+    </button>
+  </div>
+
+  <!-- Latest Reviews -->
+  <div id="normal-reviews-latest" class="normal-tab-content active">
+    <div class="normal-reviews-list"></div>
+    <div class="normal-load-more-container">
+      <button class="normal-btn-load-more" data-type="latest">
+        <i class="fas fa-chevron-down"></i> Load More
+      </button>
+    </div>
+  </div>
+
+  <!-- Oldest Reviews -->
+  <div id="normal-reviews-oldest" class="normal-tab-content">
+    <div class="normal-reviews-list"></div>
+    <div class="normal-load-more-container">
+      <button class="normal-btn-load-more" data-type="oldest">
+        <i class="fas fa-chevron-down"></i> Load More
+      </button>
+    </div>
+  </div>
+</div>
+
+
+                        
                     </div>
                 </div>
             </div>
@@ -519,6 +505,9 @@
     <script type="module" src="./Utility/loadReviewStats.js"></script>
     <script type="module" src="./Utility/reviews.js"></script>
     <script type="module" src="./Utility/topRatedReviews.js"></script>
+    <link rel="stylesheet" href="./css/normalReviews.css">
+    <script type="module" src="./Utility/normalReviews.js"></script>
+
 
 
 </body>
