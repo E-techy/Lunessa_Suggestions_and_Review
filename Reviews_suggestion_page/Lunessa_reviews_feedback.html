@@ -208,87 +208,20 @@
                             
                             <!-- Latest Top-Rated Reviews -->
                             <div id="top-rated-latest" class="sidebar-tab-content active">
-                                <div class="review-item">
-                                    <div class="review-author">James Wilson</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                    </div>
-                                    <div class="review-preview">Amazing service! The team went above and beyond to help me with my setup. Technical support was knowledgeable and patient...</div>
-                                    <div class="review-date">2024-01-15</div>
-                                </div>
-                                <div class="review-item">
-                                    <div class="review-author">Alice Johnson</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                    </div>
-                                    <div class="review-preview">Absolutely fantastic product! The quality exceeded my expectations and the delivery was lightning fast...</div>
-                                    <div class="review-date">2024-01-12</div>
-                                </div>
-                                <div class="review-item">
-                                    <div class="review-author">Lisa Garcia</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star">★</span>
-                                    </div>
-                                    <div class="review-preview">Decent product for the price. It does what it's supposed to do, but don't expect any premium features...</div>
-                                    <div class="review-date">2024-01-10</div>
-                                </div>
+                                
+                                
                             </div>
                             
                             <!-- Oldest Top-Rated Reviews -->
                             <div id="top-rated-oldest" class="sidebar-tab-content">
-                                <div class="review-item">
-                                    <div class="review-author">Sarah Mitchell</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                    </div>
-                                    <div class="review-preview">Exceptional AI service delivery with 99.9% accuracy rate. The natural language processing capabilities exceeded our requirements...</div>
-                                    <div class="review-date">2023-12-05</div>
-                                </div>
-                                <div class="review-item">
-                                    <div class="review-author">Michael Chen</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                    </div>
-                                    <div class="review-preview">Outstanding integration capabilities and API performance. The AI agent handles complex technical queries with remarkable precision...</div>
-                                    <div class="review-date">2023-11-28</div>
-                                </div>
-                                <div class="review-item">
-                                    <div class="review-author">Robert Johnson</div>
-                                    <div class="review-rating-small">
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star active">★</span>
-                                        <span class="star">★</span>
-                                    </div>
-                                    <div class="review-preview">Professional platform with solid performance metrics. The enterprise features are well-designed and user-friendly...</div>
-                                    <div class="review-date">2023-11-15</div>
-                                </div>
+                                
+
+                                
                             </div>
                             
                             <!-- Load More Button for Top-Rated Reviews -->
                             <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                                <button class="btn-load-more" onclick="loadMoreTopRatedReviews()">
+                                <button class="btn-load-more" id="loadMoreTopRated" onclick="loadMoreTopRatedReviews()">
                                     <i class="fas fa-chevron-down"></i>
                                     Load More 
                                 </button>
@@ -750,5 +683,65 @@
                         </div>
                     </div>
     </div>
+
+
+
+    <!-- Import the scripts -->
+ <script type="module">
+  import { renderTopRatedReviews } from "./utils/top_rated_reviews/renderTopRatedReviews.js";
+  import { saveReviewsToDB } from "./utils/top_rated_reviews/topRatedDB.js";
+  import { loadMoreTopRatedReviews } from "./utils/top_rated_reviews/fetchMoreTopRatedReviews.js";
+
+  async function fetchAndStoreReviews(type) {
+    try {
+      const res = await fetch(`/top_rated?type=${type}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error("Failed to fetch top reviews");
+
+      const data = await res.json();
+      if (data.success) {
+        await saveReviewsToDB(data.data, type);
+        console.log(`✅ Stored ${type} reviews`, data.data);
+      }
+    } catch (err) {
+      console.error(`❌ Error fetching ${type} reviews:`, err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("🚀 Syncing top reviews...");
+
+    await Promise.all([
+      fetchAndStoreReviews("latest"),
+      fetchAndStoreReviews("oldest")
+    ]);
+
+    renderTopRatedReviews();
+  });
+
+  document.getElementById("loadMoreTopRated").addEventListener("click", () => {
+    loadMoreTopRatedReviews();
+  });
+
+  window.switchSidebarTab = function(section, type) {
+    document.getElementById("top-rated-latest").style.display = "none";
+    document.getElementById("top-rated-oldest").style.display = "none";
+
+    document.querySelectorAll(".sidebar-tab-btn").forEach(btn => btn.classList.remove("active"));
+
+    if (type === "latest") {
+      document.getElementById("top-rated-latest").style.display = "block";
+      document.querySelector(".sidebar-tab-btn:nth-child(1)").classList.add("active");
+    } else {
+      document.getElementById("top-rated-oldest").style.display = "block";
+      document.querySelector(".sidebar-tab-btn:nth-child(2)").classList.add("active");
+    }
+
+    renderTopRatedReviews();
+  };
+</script>
+
 </body>
 </html>
