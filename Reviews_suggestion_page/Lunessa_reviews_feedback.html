@@ -24,11 +24,11 @@
 
         <div class="tab-container">
             <div class="tab-navigation">
-                <button class="tab-button active">
+                <button id="btn-reviews" class="tab-button active">
                     <i class="fas fa-star"></i>
                     Customer Reviews
                 </button>
-                <button class="tab-button">
+                <button id="btn-suggestions" class="tab-button">
                     <i class="fas fa-lightbulb"></i>
                     Suggestions & Issues
                 </button>
@@ -501,6 +501,51 @@
                         </div>
                     </div>
     </div>
+
+
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnReviews = document.getElementById("btn-reviews");
+    const btnSuggestions = document.getElementById("btn-suggestions");
+    const reviewsSection = document.getElementById("reviews");
+    const suggestionsSection = document.getElementById("suggestions");
+
+    // Helper to toggle
+    function activateTab(showSection, hideSection, activeBtn, inactiveBtn) {
+      showSection.classList.add("active");
+      hideSection.classList.remove("active");
+      activeBtn.classList.add("active");
+      inactiveBtn.classList.remove("active");
+    }
+
+    // On load → Customer Reviews active
+    activateTab(reviewsSection, suggestionsSection, btnReviews, btnSuggestions);
+
+    // Click handlers
+    btnReviews.addEventListener("click", () => {
+      activateTab(reviewsSection, suggestionsSection, btnReviews, btnSuggestions);
+    });
+
+    btnSuggestions.addEventListener("click", () => {
+      activateTab(suggestionsSection, reviewsSection, btnSuggestions, btnReviews);
+    });
+  });
+</script>
+
+<style>
+  .tab-content {
+    display: none;
+    background-color: black;
+  }
+  .tab-content.active {
+    display: block;
+    background-color: #7C3AED;
+  }
+  .tab-button.active {
+    background: #f0f0f0; /* Optional: highlight active button */
+    background-color: #7C3AED;
+  }
+</style>
 
     <script type="module" src="./Utility/loadReviewStats.js"></script>
     <script type="module" src="./Utility/reviews.js"></script>
