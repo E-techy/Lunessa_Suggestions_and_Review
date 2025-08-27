@@ -1,0 +1,80 @@
+/* Responsive Design */
+@media (max-width: 1700px) {
+    .reviews-container {
+        grid-template-columns: 1fr 650px;
+    }
+}
+@media (max-width: 1400px) {
+    .reviews-container {
+        grid-template-columns: 1fr 450px;
+    }
+}
+@media (max-width: 1200px) {
+    .reviews-container {
+        grid-template-columns: 1fr 350px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .reviews-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .suggestions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metric-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+
+    .tab-content {
+        padding: 24px;
+    }
+
+    .header {
+        padding: 40px 24px;
+    }
+
+    .suggestions-status {
+        grid-template-columns: 1fr;
+    }
+
+    .tab-button {
+        padding: 20px 24px;
+        font-size: 0.875rem;
+    }
+
+    .form-section {
+        padding: 24px;
+    }
+    
+    .metric-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-button {
+        padding: 16px 16px;
+        font-size: 0.75rem;
+    }
+    
+    .header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .header-subtitle {
+        font-size: 1rem;
+    }
+}
