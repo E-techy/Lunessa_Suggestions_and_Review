@@ -103,22 +103,22 @@ function getCurrentRating() {
  * @param {number} rating - Review rating
  * @returns {Object} Validation result
  */
-function validateForm(description, rating) {
-    const errors = [];
+// function validateForm(description, rating) {
+//     const errors = [];
     
-    if (rating === 0) {
-        errors.push('Please provide a service rating before submitting your review.');
-    }
+//     if (rating === 0) {
+//         errors.push('Please provide a service rating before submitting your review.');
+//     }
     
-    if (!description.trim()) {
-        errors.push('Please provide a detailed review before submitting.');
-    }
+//     if (!description.trim()) {
+//         errors.push('Please provide a detailed review before submitting.');
+//     }
     
-    return {
-        isValid: errors.length === 0,
-        errors: errors
-    };
-}
+//     return {
+//         isValid: errors.length === 0,
+//         errors: errors
+//     };
+// }
 
 /**
  * Reset form to initial state
@@ -205,7 +205,6 @@ window.formManager = {
     loadReviewToForm,
     setFormRating,
     getCurrentRating,
-    validateForm,
     resetForm,
     switchToEditMode,
     switchToNormalMode,

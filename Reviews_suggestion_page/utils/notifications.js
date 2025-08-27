@@ -1,97 +1,113 @@
 /**
  * Notification System Module
- * Professional notification system for user feedback
+ * Professional stacked notification system for user feedback
  */
 
-// Professional notification system
-function showNotification(message, type = 'info') {
-    // Remove existing notification
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
+(function () {
+  function showNotification(message, type = "info") {
+    // Ensure container exists
+    let container = document.querySelector(".notification-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.className = "notification-container";
+      document.body.appendChild(container);
     }
 
-    const notification = document.createElement('div');
+    // Create notification
+    const notification = document.createElement("div");
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
         <div class="notification-content">
             <i class="fas ${getNotificationIcon(type)}"></i>
             <span>${message}</span>
         </div>
-        <button class="notification-close" onclick="this.parentElement.remove()">
+        <button class="notification-close">
             <i class="fas fa-times"></i>
         </button>
     `;
 
-    // Add notification styles if not already present
-    if (!document.querySelector('#notification-styles')) {
-        addNotificationStyles();
-    }
+    // Close button handler
+    notification.querySelector(".notification-close").addEventListener("click", () => {
+      removeNotification(notification);
+    });
 
-    document.body.appendChild(notification);
+    container.appendChild(notification);
 
     // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.style.animation = 'slideInRight 0.3s ease-out reverse';
-            setTimeout(() => notification.remove(), 300);
-        }
-    }, 5000);
-}
+    setTimeout(() => removeNotification(notification), 5000);
+  }
 
-function getNotificationIcon(type) {
-    switch(type) {
-        case 'success': return 'fa-check-circle';
-        case 'warning': return 'fa-exclamation-triangle';
-        case 'error': return 'fa-times-circle';
-        default: return 'fa-info-circle';
+  function removeNotification(notification) {
+    if (notification && notification.parentElement) {
+      notification.style.animation = "slideOutRight 0.3s ease-in";
+      setTimeout(() => notification.remove(), 300);
     }
-}
+  }
 
-function addNotificationStyles() {
-    const style = document.createElement('style');
-    style.id = 'notification-styles';
+  function getNotificationIcon(type) {
+    switch (type) {
+      case "success":
+        return "fa-check-circle";
+      case "warning":
+        return "fa-exclamation-triangle";
+      case "error":
+        return "fa-times-circle";
+      default:
+        return "fa-info-circle";
+    }
+  }
+
+  function addNotificationStyles() {
+    if (document.querySelector("#notification-styles")) return;
+
+    const style = document.createElement("style");
+    style.id = "notification-styles";
     style.textContent = `
-        .notification {
+        .notification-container {
             position: fixed;
             top: 24px;
             right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+        .notification {
             max-width: 400px;
             padding: 16px 20px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            animation: slideInRight 0.3s ease-out;
             font-weight: 500;
+            animation: slideInRight 0.3s ease-out;
         }
         .notification-success {
             background: rgba(11, 238, 162, 0.97);
-            color: var(--success);
+            color: var(--success, #065f46);
             border: 1px solid rgba(16, 185, 129, 0.2);
         }
         .notification-warning {
             background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
+            color: var(--warning, #92400e);
             border: 1px solid rgba(245, 158, 11, 0.2);
         }
         .notification-error {
             background: rgba(239, 68, 68, 0.1);
-            color: var(--error);
+            color: var(--error, #991b1b);
             border: 1px solid rgba(239, 68, 68, 0.2);
         }
         .notification-info {
             background: rgba(236, 234, 71, 1);
-            color: var(--info);
+            color: var(--info, #1e3a8a);
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
         .notification-content {
             display: flex;
             align-items: center;
-            color : black;
+            color: black;
             gap: 12px;
             flex: 1;
         }
@@ -108,20 +124,20 @@ function addNotificationStyles() {
             opacity: 1;
         }
         @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
     `;
     document.head.appendChild(style);
-}
+  }
 
-// Export functions for use in other modules
-window.notificationModule = {
-    showNotification
-};
+  // Initialize styles
+  addNotificationStyles();
+
+  // Export
+  window.notificationModule = { showNotification };
+})();

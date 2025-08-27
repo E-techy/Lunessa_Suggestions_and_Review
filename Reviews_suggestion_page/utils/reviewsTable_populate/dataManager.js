@@ -23,29 +23,7 @@ function getReviewById(reviewId) {
     return window.reviewsData.find(r => r.id === reviewId) || null;
 }
 
-/**
- * Add a new review to the data
- * @param {Object} reviewData - Review data object
- * @returns {Object} The newly created review
- */
-function addReview(reviewData) {
-    const newReview = {
-        id: utils.generateId(),
-        reviewID: `REV_${utils.generateId()}_2024`,
-        name: reviewData.name || "Anonymous User",
-        username: reviewData.username || "user_" + utils.generateId(),
-        description: reviewData.description,
-        ratingStar: reviewData.rating,
-        date: utils.getCurrentDate(),
-        reviewType: reviewData.reviewType || "general",
-        positivityLevel: utils.calculatePositivityLevel(reviewData.rating),
-        files: reviewData.files || []
-    };
-    
-    window.reviewsData.unshift(newReview); // Add to beginning of array
-    return newReview;
-}
-
+ 
 /**
  * Update an existing review
  * @param {number} reviewId - Review ID to update
@@ -145,7 +123,6 @@ function clearCurrentEditingId() {
 window.dataManager = {
     getAllReviews,
     getReviewById,
-    addReview,
     deleteReview,
     filterReviewsByText,
     getCurrentEditingId,

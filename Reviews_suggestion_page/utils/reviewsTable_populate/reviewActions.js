@@ -15,20 +15,74 @@ function loadReviewToForm(reviewId) {
  * Add a new review
  * @param {Object} reviewData - Review data object
  */
-function addNewReview(reviewData) {
-    const newReview = dataManager.addReview(reviewData);
-    tableRenderer.populateReviewsTable();
-    
-    // Show success notification
-    if (window.notificationModule) {
-        window.notificationModule.showNotification(
-            'Review added successfully!', 
-            'success'
-        );
+async function addNewReview(reviewData) {
+  try {
+    let { comment, ratingStar, files } = reviewData;
+
+    // ✅ Validate comment
+    if (typeof comment !== "string") {
+      const errorMsg = "Comment must be a string";
+      if (window.notificationModule) {
+        window.notificationModule.showNotification(errorMsg, "error");
+      }
+      return { success: false, error: errorMsg };
     }
-    
-    return newReview;
+    if (comment.length > 1000) {
+      const errorMsg = "Comment cannot exceed 1000 characters";
+      if (window.notificationModule) {
+        window.notificationModule.showNotification(errorMsg, "error");
+      }
+      return { success: false, error: errorMsg };
+    }
+
+    // ✅ Validate ratingStar
+    ratingStar = parseInt(ratingStar, 10);
+    if (isNaN(ratingStar) || ratingStar < 0 || ratingStar > 5) {
+      const errorMsg = "Rating must be an integer between 0 and 5";
+      if (window.notificationModule) {
+        window.notificationModule.showNotification(errorMsg, "error");
+      }
+      return { success: false, error: errorMsg };
+    }
+
+    // ✅ Prepare payload
+    const payload = { comment, ratingStar, files };
+
+    // ✅ Send POST request
+    const response = await fetch("/review?action=create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // 👈 ensures authToken cookie is sent
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      const errorMsg = result.error || "Failed to add review";
+      if (window.notificationModule) {
+        window.notificationModule.showNotification(errorMsg, "error");
+      }
+      return { success: false, error: errorMsg };
+    }
+
+    // ✅ Success notification
+    if (window.notificationModule) {
+      window.notificationModule.showNotification("Review added successfully!", "success");
+    }
+
+    return { success: true, message: result.message };
+  } catch (err) {
+    console.error("❌ Error in addNewReview:", err);
+    const errorMsg = "Unexpected error while adding review";
+    if (window.notificationModule) {
+      window.notificationModule.showNotification(errorMsg, "error");
+    }
+    return { success: false, error: errorMsg };
+  }
 }
+
+
 
 /**
  * Edit a review - load data into form and switch to edit mode
@@ -97,42 +151,41 @@ function deleteReview(reviewId) {
  * Submit a new review (form submission handler)
  * @param {Event} event - Form submission event
  */
-function submitReview(event) {
-    event.preventDefault();
+async function submitReview(event) {
+  event.preventDefault();
+  console.log("submit clicked");
+  
+
+  const elements = formManager.getFormElements();
+  const comment = elements.textarea.value.trim();
+  const ratingStar = formManager.getCurrentRating();
+  const files =  [];
+//  formManager.getCurrentFiles() ||
+  // Show loading state
+  const originalHTML = formManager.showButtonLoading(elements.submitBtn, "Processing...");
+
+  // Prepare review data
+  const reviewData = { comment, ratingStar, files };
+  console.log(reviewData);
+  
+
+  try {
+    // Send review
+    const result = await addNewReview(reviewData);
+    console.log(result);
     
-    const elements = formManager.getFormElements();
-    const description = elements.textarea.value.trim();
-    const currentRating = formManager.getCurrentRating();
-    
-    // Validate form
-    const validation = formManager.validateForm(description, currentRating);
-    if (!validation.isValid) {
-        if (window.notificationModule) {
-            window.notificationModule.showNotification(
-                validation.errors[0], 
-                'warning'
-            );
-        }
-        return;
+
+    if (result.success) {
+      // ✅ Success → reset form
+      formManager.resetForm();
     }
-    
-    // Show loading state
-    const originalHTML = formManager.showButtonLoading(elements.submitBtn, 'Processing...');
-
-    setTimeout(() => {
-        const reviewData = {
-            description: description,
-            rating: currentRating
-        };
-
-        // Add new review
-        addNewReview(reviewData);
-
-        // Reset form
-        formManager.resetForm();
-        formManager.resetButtonLoading(elements.submitBtn, originalHTML);
-        
-    }, 1500);
+    // In both cases reset button (but not form if error)
+    formManager.resetButtonLoading(elements.submitBtn, originalHTML);
+  } catch (err) {
+    console.error("❌ Unexpected error in submitReview:", err);
+    // Reset only button (form stays for correction)
+    formManager.resetButtonLoading(elements.submitBtn, originalHTML);
+  }
 }
 
 /**
@@ -144,17 +197,6 @@ function updateReview() {
     const currentRating = formManager.getCurrentRating();
     const editingId = dataManager.getCurrentEditingId();
     
-    // Validate form
-    const validation = formManager.validateForm(description, currentRating);
-    if (!validation.isValid) {
-        if (window.notificationModule) {
-            window.notificationModule.showNotification(
-                validation.errors[0], 
-                'warning'
-            );
-        }
-        return;
-    }
     
     // Show loading state
     const originalHTML = formManager.showButtonLoading(elements.updateBtn, 'Updating...');
