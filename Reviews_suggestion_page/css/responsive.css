@@ -1,4 +1,14 @@
 /* Responsive Design */
+@media (max-width: 1700px) {
+    .reviews-container {
+        grid-template-columns: 1fr 650px;
+    }
+}
+@media (max-width: 1400px) {
+    .reviews-container {
+        grid-template-columns: 1fr 450px;
+    }
+}
 @media (max-width: 1200px) {
     .reviews-container {
         grid-template-columns: 1fr 350px;
