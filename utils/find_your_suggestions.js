@@ -1,18 +1,15 @@
-// utils/find_your_suggestions.js
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 /**
- * Fetch suggestions associated with a given username and/or suggestionId.
+ * Fetch all suggestions associated with a given username.
  *
  * This function queries the Suggestion collection and returns
- * all suggestions where the `username` matches the provided input,
- * and optionally filters by `suggestionId` if provided.
+ * all suggestions where the `username` field matches the provided input.
  *
  * @async
  * @function findYourSuggestions
  * @param {string} username - The username whose suggestions need to be fetched.
- * @param {string} [suggestionId] - Optional suggestionId to fetch a specific suggestion.
  * @returns {Promise<Object>} - An object containing:
  *   - success {boolean} : Operation status
  *   - suggestions {Array<Object>} : List of matching suggestion documents
@@ -22,11 +19,11 @@ const prisma = new PrismaClient();
  * const { findYourSuggestions } = require("./utils/find_your_suggestions");
  * 
  * (async () => {
- *   const result = await findYourSuggestions("john_doe", "suggestion123");
+ *   const result = await findYourSuggestions("john_doe");
  *   console.log(result);
  * })();
  */
-async function findYourSuggestions(username, suggestionId) {
+async function findYourSuggestions(username) {
   try {
     if (!username || typeof username !== "string") {
       return {
@@ -36,13 +33,8 @@ async function findYourSuggestions(username, suggestionId) {
       };
     }
 
-    const whereClause = { username };
-    if (suggestionId && typeof suggestionId === "string") {
-      whereClause.suggestionId = suggestionId;
-    }
-
     const suggestions = await prisma.Suggestion.findMany({
-      where: whereClause,
+      where: { username },
       orderBy: { createdAt: "desc" }, // latest first
     });
 

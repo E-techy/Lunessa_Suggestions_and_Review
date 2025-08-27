@@ -21,6 +21,12 @@ const modifyReview = require("./utils/modify_review");
 const getLatestReviews = require("./utils/reviews_data_fetching/get_latest_reviews");
 const getOldestReviews = require("./utils/reviews_data_fetching/get_oldest_reviews");
 
+const deleteSuggestion = require("./utils/delete_suggestion");
+
+const findYourSuggestions = require("./utils/find_your_suggestions");
+
+
+
 
 
 const app = express();
@@ -176,7 +182,6 @@ app.post("/normal_review", async (req, res) => {
         message: "Failed to fetch reviews.",
       });
     }
- console.log(result);
     return res.json(result);
   } catch (error) {
     console.error("❌ Error in /normal_review:", error);
@@ -306,6 +311,8 @@ app.post("/delete_your_review", authenticateUser, async (req, res) => {
   }
 });
 
+
+
 // add or modify suggestion 
 app.post("/suggestion", async (req, res) => {
   const { action } = req.query;
@@ -389,6 +396,84 @@ app.post("/suggestion", async (req, res) => {
   } catch (err) {
     console.error("❌ Error in /suggestion:", err);
     return res.status(500).json({ success: false, error: "Unexpected server error" });
+  }
+});
+
+
+// delete your suggestion
+app.post("/delete_your_suggestion", authenticateUser, async (req, res) => {
+  try {
+    const { suggestionId } = req.body;
+    const { username, userType } = req.body;
+
+    // 🔒 Check authentication first
+    if (userType !== "authenticUser" || !username || username === "Anonymous") {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized. Please login with a valid account.",
+      });
+    }
+
+    // ✅ Validate suggestionId
+    if (!suggestionId || typeof suggestionId !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "A valid suggestionId must be provided.",
+      });
+    }
+
+    // 🗑 Attempt to delete suggestion
+    const result = await deleteSuggestion(suggestionId, username);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.error || "Failed to delete suggestion.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Suggestion deleted successfully.",
+    });
+  } catch (error) {
+    console.error("❌ Error in /delete_your_suggestion:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while deleting suggestion.",
+    });
+  }
+});
+
+// fetch your suggestions
+app.post("/get_your_suggestions", authenticateUser, async (req, res) => {
+  try {
+    const { username, userType } = req.body;
+
+    // ❌ Block if not authenticated
+    if (userType !== "authenticUser" || username === "Anonymous") {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized. Please login to fetch your suggestions.",
+        suggestions: [],
+      });
+    }
+
+    // ✅ Fetch suggestions from DB
+    const result = await findYourSuggestions(username);
+
+    if (result.success) {
+      return res.json(result);
+    } else {
+      return res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error("❌ Error in /get_your_suggestions:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while fetching suggestions.",
+      suggestions: [],
+    });
   }
 });
 
