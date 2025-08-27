@@ -21,7 +21,7 @@ async function getReviewStats() {
     return { success: true, stats };
   } catch (error) {
     console.error("❌ Error fetching review stats:", error);
-    return { success: false, error: error.message || error };
+    return { success: false, error: "Counld not get reviewStats, try again later" };
   }
 }
 

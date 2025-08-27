@@ -1,5 +1,6 @@
 const express = require("express"); 
 const cookieParser = require('cookie-parser');
+const reviewStats = require("./utils/reviews_data_fetching/get_review_stats");
 
 const app = express();
 require('dotenv').config();
@@ -18,6 +19,14 @@ app.get("/lunessa_review_suggestions", (req, res)=>{
     // Sending the review and suggestion page
     res.sendFile(__dirname+"/Reviews_suggestion_page/Lunessa_reviews_feedback.html");
     
+})
+
+
+// Sending the review statistics to the user, without any password or username
+app.post("/review_stats", async(req, res)=>{
+    const reviewStatsData = await reviewStats();
+    
+    res.send(reviewStatsData);
 })
 
 // Start server

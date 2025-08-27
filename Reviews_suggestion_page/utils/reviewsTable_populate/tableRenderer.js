@@ -68,27 +68,9 @@ function populateReviewsTable() {
     });
 
     // Update metrics after table population
-    updateReviewMetrics();
+    // updateReviewMetrics();
 }
 
-/**
- * Update the review metrics display
- */
-function updateReviewMetrics() {
-    const metrics = dataManager.calculateMetrics();
-    
-    // Update DOM elements
-    const metricCards = document.querySelectorAll('.metric-card');
-    if (metricCards.length >= 3) {
-        const avgElement = metricCards[0].querySelector('.metric-value');
-        const totalElement = metricCards[1].querySelector('.metric-value');
-        const positiveElement = metricCards[2].querySelector('.metric-value');
-        
-        if (avgElement) avgElement.textContent = metrics.averageRating;
-        if (totalElement) totalElement.textContent = metrics.totalReviews;
-        if (positiveElement) positiveElement.textContent = metrics.positivePercentage + '%';
-    }
-}
 
 /**
  * Filter table rows based on search term
@@ -144,7 +126,6 @@ function highlightTableRow(reviewId) {
 window.tableRenderer = {
     createTableRow,
     populateReviewsTable,
-    updateReviewMetrics,
     filterTableRows,
     removeTableRowWithAnimation,
     highlightTableRow

@@ -52,20 +52,20 @@ function addReview(reviewData) {
  * @param {Object} updateData - Data to update
  * @returns {boolean} Success status
  */
-function updateReview(reviewId, updateData) {
-    const reviewIndex = window.reviewsData.findIndex(r => r.id === reviewId);
-    if (reviewIndex === -1) return false;
+// function updateReview(reviewId, updateData) {
+//     const reviewIndex = window.reviewsData.findIndex(r => r.id === reviewId);
+//     if (reviewIndex === -1) return false;
     
-    window.reviewsData[reviewIndex] = {
-        ...window.reviewsData[reviewIndex],
-        ...updateData,
-        positivityLevel: updateData.rating ? 
-            utils.calculatePositivityLevel(updateData.rating) : 
-            window.reviewsData[reviewIndex].positivityLevel
-    };
+//     window.reviewsData[reviewIndex] = {
+//         ...window.reviewsData[reviewIndex],
+//         ...updateData,
+//         positivityLevel: updateData.rating ? 
+//             utils.calculatePositivityLevel(updateData.rating) : 
+//             window.reviewsData[reviewIndex].positivityLevel
+//     };
     
-    return true;
-}
+//     return true;
+// }
 
 /**
  * Delete a review
@@ -82,26 +82,26 @@ function deleteReview(reviewId) {
  * Calculate review metrics
  * @returns {Object} Metrics object with averages and counts
  */
-function calculateMetrics() {
-    const reviews = getAllReviews();
-    if (reviews.length === 0) {
-        return {
-            averageRating: 0,
-            totalReviews: 0,
-            positivePercentage: 0
-        };
-    }
+// function calculateMetrics() {
+//     const reviews = getAllReviews();
+//     if (reviews.length === 0) {
+//         return {
+//             averageRating: 0,
+//             totalReviews: 0,
+//             positivePercentage: 0
+//         };
+//     }
     
-    const avgRating = (reviews.reduce((sum, review) => sum + review.ratingStar, 0) / reviews.length).toFixed(1);
-    const positiveReviews = reviews.filter(review => review.ratingStar >= 4).length;
-    const positivePercentage = Math.round((positiveReviews / reviews.length) * 100);
+//     const avgRating = (reviews.reduce((sum, review) => sum + review.ratingStar, 0) / reviews.length).toFixed(1);
+//     const positiveReviews = reviews.filter(review => review.ratingStar >= 4).length;
+//     const positivePercentage = Math.round((positiveReviews / reviews.length) * 100);
     
-    return {
-        averageRating: avgRating,
-        totalReviews: reviews.length,
-        positivePercentage: positivePercentage
-    };
-}
+//     return {
+//         averageRating: avgRating,
+//         totalReviews: reviews.length,
+//         positivePercentage: positivePercentage
+//     };
+// }
 
 /**
  * Filter reviews by search term
@@ -146,9 +146,7 @@ window.dataManager = {
     getAllReviews,
     getReviewById,
     addReview,
-    updateReview,
     deleteReview,
-    calculateMetrics,
     filterReviewsByText,
     getCurrentEditingId,
     setCurrentEditingId,
