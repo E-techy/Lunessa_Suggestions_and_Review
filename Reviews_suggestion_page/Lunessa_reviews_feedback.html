@@ -381,125 +381,88 @@
                                     Load More
                                 </button>
                             </div>
-                </div>
+                            <!-- this is new suggestiom -->
+  <div class="suggestions-grid">
+    <div class="form-section">
+      <h3 class="section-title">
+        <i class="fas fa-bug"></i>
+        Issue Reporting & Suggestions
+      </h3>
+      <form id="suggestionForm" class="form-grid">
+        <input type="hidden" id="suggestionId" /> <!-- for editing -->
+
+        <div class="form-group">
+          <label class="form-label">Issue Category</label>
+          <select id="suggestionCategory" class="form-select" required>
+            <option value="">Select issue type</option>
+            <option value="system bug">System Bug</option>
+            <option value="Ui bug">UI Bug</option>
+            <option value="documentatoin">Documentation</option>
+            <option value="feature enhancement">Feature Enhancement</option>
+            <option value="Ui enhancement">UI Enhancement</option>
+            <option value="help wanted">Help Wanted</option>
+            <option value="question">Question</option>
+            <option value="API related">API Related</option>
+            <option value="performance optimization">Performance Optimization</option>
+            <option value="security concern">Security Concern</option>
+            <option value="Accessibility">Accessibility</option>
+            <option value="AI Agent">AI Agent</option>
+          </select>
         </div>
-        <div class="suggestions-grid">
-                    <div class="form-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-bug"></i>
-                            Issue Reporting & Suggestions
-                        </h3>
-                        <form class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Issue Category</label>
-                                <select class="form-select" required>
-                                    <option value="">Select issue type</option>
-                                    <option value="feature-request">Feature Enhancement</option>
-                                    <option value="critical-bug">Critical System Bug</option>
-                                    <option value="ui-ux">User Interface/Experience</option>
-                                    <option value="performance">Performance Optimization</option>
-                                    <option value="security">Security Concern</option>
-                                    <option value="accessibility">Accessibility</option>
-                                    <option value="infrastructure">Infrastructure</option>
-                                    <option value="api-integration">API Integration</option>
-                                    <option value="documentation">Documentation</option>
-                                </select>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Detailed Description</label>
-                                <textarea class="form-textarea" placeholder="Provide comprehensive details about the issue or suggestion, including steps to reproduce, expected vs actual behavior, and potential business impact..." required></textarea>
-                            </div>
+        <div class="form-group">
+          <label class="form-label">Detailed Description</label>
+          <textarea id="suggestionDescription" class="form-textarea" required></textarea>
+        </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Supporting Materials</label>
-                                <div class="upload-area">
-                                    <div class="upload-icon">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                    </div>
-                                    <div class="upload-text">Upload Screenshots, Logs, or Documentation</div>
-                                    <div class="upload-subtext">Drag & drop files here or click to browse<br>PNG, JPG, PDF, TXT up to 25MB</div>
-                                </div>
-                                <input type="file" id="suggestionImage" class="file-input" accept="image/*,.pdf,.txt,.log" multiple>
-                            </div>
+        <div class="form-group">
+          <label class="form-label">Supporting Materials</label>
+          <input type="file" id="suggestionFiles" class="file-input" accept="image/*,.pdf,.txt,.log" multiple>
+        </div>
 
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i>
-                                Submit Report
-                            </button>
-                        </form>
-                    </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-paper-plane"></i>
+          Submit / Update
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="suggestions-table-section">
+    <h3 class="section-title">
+      <i class="fas fa-list-alt"></i>
+      Your Submitted Issues & Suggestions
+    </h3>
+
+    <div class="suggestions-table-container">
+      <table class="suggestions-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="suggestionsTableBody">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
                 </div>
-                <div class="suggestions-table-section">
-                        <div style="margin-bottom: 16px;">
-                            <h3 class="section-title">
-                                <i class="fas fa-list-alt"></i>
-                                Your Submitted Issues & Suggestions
-                            </h3>
-                            
-                            <!-- Filters and Search Panel -->
-                            <div class="filters-panel" style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 12px; border: 1px solid #e5e7eb;">
-                                <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <label style="font-weight: 500; color: #374151; font-size: 14px;">Category:</label>
-                                        <select id="categoryFilter" class="form-select" style="width: 180px; padding: 6px 10px; font-size: 14px;">
-                                            <option value="">All Categories</option>
-                                            <option value="Feature Request">Feature Request</option>
-                                            <option value="Critical Bug">Critical Bug</option>
-                                            <option value="UI/UX">UI/UX</option>
-                                            <option value="Performance">Performance</option>
-                                            <option value="Security">Security</option>
-                                            <option value="Accessibility">Accessibility</option>
-                                            <option value="Infrastructure">Infrastructure</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <label style="font-weight: 500; color: #374151; font-size: 14px;">Status:</label>
-                                        <select id="statusFilter" class="form-select" style="width: 140px; padding: 6px 10px; font-size: 14px;">
-                                            <option value="">All Status</option>
-                                            <option value="pending">Pending</option>
-                                            <option value="progress">In Progress</option>
-                                            <option value="resolved">Resolved</option>
-                                            <option value="rejected">Rejected</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
-                                        <label style="font-weight: 500; color: #374151; font-size: 14px;">Search Description:</label>
-                                        <div class="search-box" style="display: flex; align-items: center; gap: 8px;">
-                                            <input type="text" 
-                                                   id="descriptionSearch"
-                                                   placeholder="Search in descriptions..." 
-                                                   class="form-input" 
-                                                   style="width: 200px; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                            <i class="fas fa-search" style="color: #6b7280;"></i>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 14px;">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="suggestions-table-container">
-                            <table class="suggestions-table">
-                                <thead style="background: linear-gradient(135deg, var(--accent), #7C3AED);">
-                                    <tr>
-                                        <th><i class="fas fa-tag"></i> Category</th>
-                                        <th><i class="fas fa-comment-alt"></i> Description</th>
-                                        <th><i class="fas fa-traffic-light"></i> Status</th>
-                                        <th><i class="fas fa-calendar"></i> Date</th>
-                                        <th><i class="fas fa-cog"></i> Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Table content will be populated by JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+        
+       
+
+
+<!-- Import script -->
+<script type="module" src="./Utility/suggestions.js"></script>
+
+
+    </div>
+
     </div>
 
 
