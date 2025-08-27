@@ -5,6 +5,8 @@ const reviewStats = require("./utils/reviews_data_fetching/get_review_stats");
 const jwt = require("jsonwebtoken");
 const formatReview = require("./utils/format_review");
 const addReview = require("./utils/add_review");
+const getTopReviews = require("./utils/reviews_data_fetching/get_top_reviews");
+
 
 
 const app = express();
@@ -110,6 +112,34 @@ app.post("/review", async (req, res) => {
   }
 });
 
+
+// Sending the top rated reviews 
+app.post("/top_rated", async (req, res) => {
+  try {
+    const { timestamp, type } = req.query;
+
+    // Call utility function
+    const result = await getTopReviews(timestamp, type);
+
+    if (result.success) {
+      return res.json({
+        success: true,
+        data: result.reviews,
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        data: "Failed to fetch top reviews",
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error in /top_rated route:", error);
+    return res.status(500).json({
+      success: false,
+      data: error.message || "Internal server error",
+    });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
