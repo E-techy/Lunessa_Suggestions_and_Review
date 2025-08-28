@@ -251,63 +251,48 @@
                             <i class="fas fa-hourglass-half"></i>
                             Active Issues
                         </h4>
+
                         <div class="sidebar-tabs-container">
                             <div class="sidebar-tabs">
-                                <button class="sidebar-tab-btn active">
-                                    <i class="fas fa-clock"></i>
-                                    Pending
-                                </button>
-                                <button class="sidebar-tab-btn">
-                                    <i class="fas fa-cog"></i>
-                                    Active
-                                </button>
+                            <button class="sidebar-tab-btn active" data-tab="pending">
+                                <i class="fas fa-clock"></i> Pending
+                            </button>
+                            <button class="sidebar-tab-btn" data-tab="active">
+                                <i class="fas fa-cog"></i> Active
+                            </button>
                             </div>
+
                             <div class="filter-dropdown">
-                                <select class="filter-select" id="activeIssuesFilter">
-                                    <option value="latest">Latest</option>
-                                    <option value="oldest">Oldest</option>
-                                </select>
+                            <select class="filter-select" id="activeIssuesFilter">
+                                <option value="latest" selected>Latest</option>
+                                <option value="oldest">Oldest</option>
+                            </select>
                             </div>
                         </div>
-                        
-                        <!-- Pending Active Issues -->
+
+                        <!-- Pending Issues -->
                         <div id="active-issues-pending" class="sidebar-tab-content active">
-                            <div class="status-item">
-                                <div class="status-title">Advanced Analytics Dashboard</div>
-                                <div class="status-desc">Enhanced reporting capabilities with real-time metrics and custom KPI tracking for enterprise accounts</div>
-                                <span class="status-badge badge-pending">
-                                    <i class="fas fa-clock"></i>
-                                    Under Review
-                                </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Submitted: Aug 18, 2025</span>
-                                    <span class="status-priority priority-high">High Priority</span>
-                                </div>
+                            <div class="issues-list" id="pendingIssuesList"></div>
+                            <div class="load-more-container">
+                            <button class="btn-load-more" id="loadMorePending">
+                                <i class="fas fa-chevron-down"></i> Load More Pending
+                            </button>
                             </div>
                         </div>
-                        
+
                         <!-- Active Issues -->
                         <div id="active-issues-active" class="sidebar-tab-content">
-                            <div class="status-item">
-                                <div class="status-title">Enterprise API Rate Limiting</div>
-                                <div class="status-desc">Performance optimization for high-volume enterprise clients requiring increased throughput capacity</div>
-                                <span class="status-badge badge-progress">
-                                    <i class="fas fa-cog fa-spin"></i>
-                                    In Development
-                                </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Started: Aug 15, 2025</span>
-                                    <span class="status-progress">Progress: 65%</span>
-                                </div>
-                            </div>       
-                        </div><!-- Load More Button for Active Issues -->
-                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                                <button class="btn-load-more">
-                                    <i class="fas fa-chevron-down"></i>
-                                    Load More
-                                </button>
+                            <div class="issues-list" id="activeIssuesList"></div>
+                            <div class="load-more-container">
+                            <button class="btn-load-more" id="loadMoreActive">
+                                <i class="fas fa-chevron-down"></i> Load More Active
+                            </button>
                             </div>
-            </div>
+                        </div>
+                    </div>
+
+
+
             <div class="sidebar-section">
                         <h4 class="sidebar-title">
                             <i class="fas fa-check-circle"></i>
@@ -382,83 +367,85 @@
                                 </button>
                             </div>
                             <!-- this is new suggestiom -->
-  <div class="suggestions-grid">
-    <div class="form-section">
-      <h3 class="section-title">
-        <i class="fas fa-bug"></i>
-        Issue Reporting & Suggestions
-      </h3>
-      <form id="suggestionForm" class="form-grid">
-        <input type="hidden" id="suggestionId" /> <!-- for editing -->
+                    <div class="suggestions-grid">
+                        <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-bug"></i>
+                            Issue Reporting & Suggestions
+                        </h3>
+                        <form id="suggestionForm" class="form-grid">
+                            <input type="hidden" id="suggestionId" /> <!-- for editing -->
 
-        <div class="form-group">
-          <label class="form-label">Issue Category</label>
-          <select id="suggestionCategory" class="form-select" required>
-            <option value="">Select issue type</option>
-            <option value="system bug">System Bug</option>
-            <option value="Ui bug">UI Bug</option>
-            <option value="documentatoin">Documentation</option>
-            <option value="feature enhancement">Feature Enhancement</option>
-            <option value="Ui enhancement">UI Enhancement</option>
-            <option value="help wanted">Help Wanted</option>
-            <option value="question">Question</option>
-            <option value="API related">API Related</option>
-            <option value="performance optimization">Performance Optimization</option>
-            <option value="security concern">Security Concern</option>
-            <option value="Accessibility">Accessibility</option>
-            <option value="AI Agent">AI Agent</option>
-          </select>
+                            <div class="form-group">
+                            <label class="form-label">Issue Category</label>
+                            <select id="suggestionCategory" class="form-select" required>
+                                <option value="">Select issue type</option>
+                                <option value="system bug">System Bug</option>
+                                <option value="Ui bug">UI Bug</option>
+                                <option value="documentatoin">Documentation</option>
+                                <option value="feature enhancement">Feature Enhancement</option>
+                                <option value="Ui enhancement">UI Enhancement</option>
+                                <option value="help wanted">Help Wanted</option>
+                                <option value="question">Question</option>
+                                <option value="API related">API Related</option>
+                                <option value="performance optimization">Performance Optimization</option>
+                                <option value="security concern">Security Concern</option>
+                                <option value="Accessibility">Accessibility</option>
+                                <option value="AI Agent">AI Agent</option>
+                            </select>
+                            </div>
+
+                            <div class="form-group">
+                            <label class="form-label">Detailed Description</label>
+                            <textarea id="suggestionDescription" class="form-textarea" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                            <label class="form-label">Supporting Materials</label>
+                            <input type="file" id="suggestionFiles" class="file-input" accept="image/*,.pdf,.txt,.log" multiple>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit / Update
+                            </button>
+                        </form>
+                        </div>
+                    </div>
+
+                    <div class="suggestions-table-section">
+                        <h3 class="section-title">
+                        <i class="fas fa-list-alt"></i>
+                        Your Submitted Issues & Suggestions
+                        </h3>
+
+                        <div class="suggestions-table-container">
+                        <table class="suggestions-table">
+                            <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="suggestionsTableBody">
+                            <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Detailed Description</label>
-          <textarea id="suggestionDescription" class="form-textarea" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Supporting Materials</label>
-          <input type="file" id="suggestionFiles" class="file-input" accept="image/*,.pdf,.txt,.log" multiple>
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-paper-plane"></i>
-          Submit / Update
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <div class="suggestions-table-section">
-    <h3 class="section-title">
-      <i class="fas fa-list-alt"></i>
-      Your Submitted Issues & Suggestions
-    </h3>
-
-    <div class="suggestions-table-container">
-      <table class="suggestions-table">
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="suggestionsTableBody">
-          <!-- Populated dynamically -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-                </div>
         
        
 
 
 <!-- Import script -->
 <script type="module" src="./Utility/suggestions.js"></script>
+
+
 
 
     </div>
@@ -515,6 +502,8 @@
     <script type="module" src="./Utility/topRatedReviews.js"></script>
     <link rel="stylesheet" href="./css/normalReviews.css">
     <script type="module" src="./Utility/normalReviews.js"></script>
+    <!-- JS -->
+<script type="module" src="./Utility/active_issues.js"></script>
 
 
 
