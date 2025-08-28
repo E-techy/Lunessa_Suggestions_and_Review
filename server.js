@@ -25,6 +25,8 @@ const deleteSuggestion = require("./utils/delete_suggestion");
 
 const findYourSuggestions = require("./utils/find_your_suggestions");
 
+const getActiveSuggestions = require("./utils/suggestions_data_fetching/get_active_suggestions");
+
 
 
 
@@ -313,6 +315,8 @@ app.post("/delete_your_review", authenticateUser, async (req, res) => {
 
 
 
+
+
 // add or modify suggestion 
 app.post("/suggestion", async (req, res) => {
   const { action } = req.query;
@@ -477,6 +481,58 @@ app.post("/get_your_suggestions", authenticateUser, async (req, res) => {
   }
 });
 
+// get the active suggestions
+app.post("/active_suggestions", async (req, res) => {
+  try {
+    let { timestamp = null, filterType = "latest", suggestionType = "active" } = req.query;
+
+    // ✅ Validate filterType
+    if (!["latest", "oldest"].includes(filterType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid filterType. Must be either 'latest' or 'oldest'.",
+      });
+    }
+
+    // ✅ Validate suggestionType
+    if (!["active", "pending"].includes(suggestionType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid suggestionType. Must be either 'active' or 'pending'.",
+      });
+    }
+
+    // ✅ Validate timestamp if provided
+    if (timestamp) {
+      const parsedDate = new Date(timestamp);
+      if (isNaN(parsedDate.getTime())) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid timestamp format. Must be a valid ISO date string like '2025-08-25T19:30:28.263+00:00'.",
+        });
+      }
+    }
+
+    // ✅ Fetch from DB
+    const result = await getActiveSuggestions({ timestamp, filterType, suggestionType });
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch active suggestions.",
+      });
+    }
+
+    return res.json(result);
+  } catch (error) {
+    console.error("❌ Error in /active_suggestions:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while fetching active suggestions.",
+    });
+  }
+});
 
 
 // Start server
