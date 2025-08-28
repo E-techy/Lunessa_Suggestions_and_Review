@@ -7,7 +7,7 @@ const validateFiles = require("./validate_files");
 const ALLOWED_CATEGORIES = [
   "system bug",
   "Ui bug",
-  "documentatoin",
+  "documentation",
   "feature enhancement",
   "Ui enhancement",
   "help wanted",

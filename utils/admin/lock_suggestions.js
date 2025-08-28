@@ -40,7 +40,7 @@ async function lockSuggestion(apiKey, authToken, jwtSecret, suggestionId) {
       admin === "incorrect_api_key"
     ) {
       return admin;
-    }
+    } 
 
     // ✅ Role check
     if (admin.role !== "superAdmin" && admin.role !== "edit") {
@@ -62,7 +62,7 @@ async function lockSuggestion(apiKey, authToken, jwtSecret, suggestionId) {
       data: {
         accepted: true,
         acceptedAt: new Date(),
-        suggestionStatus: "underReview",
+        suggestionStatus: "under-review",
       },
     });
 
