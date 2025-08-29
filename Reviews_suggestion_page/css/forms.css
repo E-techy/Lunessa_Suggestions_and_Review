@@ -276,5 +276,8 @@
 }
 
 .btn-danger:hover {
-    background: linear-gradient(135deg, #DC2626, #B91C1C);
+    background: var(--error-100);
+    color: var(--error-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }

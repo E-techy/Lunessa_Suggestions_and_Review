@@ -1,10 +1,8 @@
 // topRatedReviews.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".sidebar-tab-btn");
   const contents = document.querySelectorAll(".sidebar-tab-content");
 
-  // Track last timestamps for pagination
   let lastTimestamps = { latest: null, oldest: null };
 
   // Switch tabs
@@ -14,20 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
       contents.forEach(c => c.classList.remove("active"));
 
       tab.classList.add("active");
-      const type = tab.dataset.tab;
+      const type = tab.dataset.tab; // e.g., "latest" or "oldest"
       document.getElementById(`top-rated-${type}`).classList.add("active");
 
-      // Load fresh reviews when switching
       loadReviews(type, true);
     });
   });
 
   // Fetch and render reviews
   async function loadReviews(type = "latest", reset = false) {
-    const container = document.querySelector(`#top-rated-${type} .reviews-list`);
+    const container = document.getElementById(`top-rated-${type}`);
 
     if (reset) {
-      container.innerHTML = "";
+      container.querySelectorAll(".review-item").forEach(el => el.remove());
       lastTimestamps[type] = null;
     }
 
@@ -55,10 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="review-date">${new Date(r.createdAt).toLocaleDateString()}</div>
           </div>
         `;
-        container.insertAdjacentHTML("beforeend", reviewHTML);
+        container.insertAdjacentHTML("afterbegin", reviewHTML);
       });
 
-      // Update last timestamp (based on last review)
       const lastReview = data.data[data.data.length - 1];
       lastTimestamps[type] = new Date(lastReview.createdAt).toISOString();
     } catch (err) {
@@ -66,14 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Handle Load More buttons
+  // Load More buttons
   document.querySelectorAll(".btn-load-more").forEach(btn => {
     btn.addEventListener("click", () => {
-      const type = btn.dataset.type;
+      const type = btn.closest(".sidebar-tab-content").id.includes("latest") ? "latest" : "oldest";
       loadReviews(type, false);
     });
   });
 
-  // Load latest reviews on first page load
+  // Initial load
   loadReviews("latest", true);
 });

@@ -1,23 +1,55 @@
+// =============================
+// statusRenderer.js
+// =============================
+window.statusRenderer = (function () {
+  function getStatusInfo(status) {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return { icon: "fas fa-clock", class: "badge-pending"};
+      case "under-review":
+        return { icon: "fas fa-eye", class: "badge-under-review"};
+      case "under review":
+        return { icon: "fas fa-eye", class: "badge-under-review"};
+      case "in-progress":
+        return { icon: "fas fa-cog fa-spin", class: "badge-progress"};
+      case "in progress":
+        return { icon: "fas fa-cog fa-spin", class: "badge-progress"};
+      case "live":
+        return { icon: "fas fa-broadcast-tower", class: "badge-live"};
+      case "completed":
+        return { icon: "fas fa-check-circle", class: "badge-completed"};
+      case "resolved":
+        return { icon: "fas fa-check", class: "badge-resolved"};
+      case "rejected":
+        return { icon: "fas fa-times-circle", class: "badge-rejected"};
+      default:
+        return { icon: "fas fa-question-circle", class: "badge-unknown" };
+    }
+  }
+
+  return {
+    getStatusInfo,
+  };
+})();
+
+
+// =============================
 // active_issues.js
+// =============================
 document.addEventListener("DOMContentLoaded", () => {
   const filterSelect = document.getElementById("activeIssuesFilter");
-  const tabButtons = document.querySelectorAll(".sidebar-tab-btn");
-  const tabContents = document.querySelectorAll(".sidebar-tab-content");
+  const tabButtons = document.querySelectorAll(".sidebar-active-issue-btn");
+  const tabContents = document.querySelectorAll(".sidebar-active-issue-content");
 
   const pendingList = document.getElementById("pendingIssuesList");
-  const activeList = document.getElementById("activeIssuesList");
-  const loadMorePending = document.getElementById("loadMorePending");
+  const activeList = document.getElementById("activeIssuesList-issue");
+  const loadMorePending = document.getElementById("loadMorePending-issue");
   const loadMoreActive = document.getElementById("loadMoreActive");
 
-  // Track last timestamps for pagination
-  let lastTimestamps = {
-    pending: null,
-    active: null,
-  };
+  let lastTimestamps = { pending: null, active: null };
 
   console.log("📌 Initializing Active Issues page...");
 
-  // Initialize
   fetchSuggestions("pending");
   fetchSuggestions("active");
 
@@ -25,21 +57,20 @@ document.addEventListener("DOMContentLoaded", () => {
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       const tab = btn.dataset.tab;
-      console.log(`📌 Switching tab -> ${tab}`);
-
-      // Toggle active button
       tabButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      // Toggle content
       tabContents.forEach(c => c.classList.remove("active"));
-      document.getElementById(`active-issues-${tab}`).classList.add("active");
+      if (tab === "pending-active-issue") {
+        document.getElementById("active-issues-pending").classList.add("active");
+      } else if (tab === "active-active-issue") {
+        document.getElementById("active-issues-active").classList.add("active");
+      }
     });
   });
 
   // Filter change reloads both tabs
   filterSelect.addEventListener("change", () => {
-    console.log(`🔄 Filter changed to -> ${filterSelect.value}`);
     lastTimestamps = { pending: null, active: null };
     pendingList.innerHTML = "";
     activeList.innerHTML = "";
@@ -48,15 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Load more buttons
-  loadMorePending.addEventListener("click", () => {
-    console.log("⏭ Loading more pending suggestions...");
-    fetchSuggestions("pending");
-  });
-
-  loadMoreActive.addEventListener("click", () => {
-    console.log("⏭ Loading more active suggestions...");
-    fetchSuggestions("active");
-  });
+  loadMorePending.addEventListener("click", () => fetchSuggestions("pending"));
+  loadMoreActive.addEventListener("click", () => fetchSuggestions("active"));
 
   // Fetch suggestions from server
   async function fetchSuggestions(type) {
@@ -64,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const timestamp = lastTimestamps[type];
 
     try {
-      console.log(`📡 Fetching ${type} suggestions...`);
       const url = new URL("/active_suggestions", window.location.origin);
       url.searchParams.set("filterType", filterType);
       url.searchParams.set("suggestionType", type);
@@ -78,11 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       if (!data.success) throw new Error(data.message || "Failed to fetch");
 
-      console.log(`✅ Received ${data.suggestions.length} ${type} suggestions`);
-
       renderSuggestions(type, data.suggestions);
 
-      // Update last timestamp for pagination
       if (data.suggestions.length > 0) {
         const last = data.suggestions[data.suggestions.length - 1];
         lastTimestamps[type] = last.createdAt;
@@ -99,18 +119,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!suggestions || suggestions.length === 0) {
       if (container.innerHTML === "") {
         container.innerHTML = `<p class="no-data">No ${type} suggestions found.</p>`;
-        console.log(`⚠️ No ${type} suggestions found`);
       }
       return;
     }
 
     suggestions.forEach(s => {
+      const statusInfo = window.statusRenderer.getStatusInfo(s.suggestionStatus);
+
       const item = document.createElement("div");
       item.className = "status-item";
       item.innerHTML = `
         <div class="status-title">${s.name} - ${s.suggestionCategory}</div>
         <div class="status-desc">${s.suggestionDescription}</div>
-        <span class="status-badge">${s.suggestionStatus}</span>
+        <span class="status-badge ${statusInfo.class}" style="color:${statusInfo.color}">
+          <i class="${statusInfo.icon}"></i> ${s.suggestionStatus}
+        </span>
         <div class="status-meta">
           <span class="status-date">Created: ${new Date(s.createdAt).toLocaleDateString()}</span>
           <span class="status-date">Last Modified: ${new Date(s.lastModified).toLocaleDateString()}</span>
@@ -122,7 +145,5 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       container.appendChild(item);
     });
-
-    console.log(`🎨 Rendered ${suggestions.length} ${type} suggestions`);
   }
 });

@@ -92,3 +92,65 @@
         transform: translateY(0); 
     }
 }
+.custom-tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    color: black;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    max-width: 300px;
+    word-wrap: break-word;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    line-height: 1.4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.custom-tooltip {
+  position: absolute;
+  background: #111827;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  max-width: 300px;
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(-5px);
+  z-index: 1000;
+}
+.custom-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.custom-tooltip {
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  max-width: 250px;
+  word-wrap: break-word;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 9999;
+}
+
+.custom-tooltip.show {
+  opacity: 1;
+}
+.review-description {
+  display: block;
+  max-width: 200px; /* adjust */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}

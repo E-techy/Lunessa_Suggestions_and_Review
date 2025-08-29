@@ -1,17 +1,17 @@
-// reviews.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("reviewForm");
-  const reviewIDField = document.getElementById("reviewIDField");
-  const commentField = document.getElementById("reviewComment");
+  const commentField = form.querySelector("textarea");
+  const reviewFileInput = document.getElementById("reviewFile");
   const submitBtn = document.getElementById("submitReviewBtn");
   const updateBtn = document.getElementById("updateReviewBtn");
   const cancelBtn = document.getElementById("cancelEditBtn");
-  const reviewsTableBody = document.querySelector("#reviewsTable tbody");
+  const reviewsTableBody = document.querySelector(".reviews-table tbody");
 
   let currentRating = 0;
+  let editingReviewID = null;
+  let allReviews = [];
 
-  // ⭐ rating selector
+  // ⭐ Rating selector
   document.querySelectorAll("#reviewRating .star").forEach(star => {
     star.addEventListener("click", () => {
       currentRating = parseInt(star.dataset.rating);
@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Fetch your reviews
   async function loadReviews() {
     try {
       const res = await fetch("/get_your_reviews", {
@@ -32,46 +31,71 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json();
-      if (!data.success) throw new Error(data.message);
+      if (!data.success) throw new Error(data.message || "Unauthorized. Please login.");
 
-      reviewsTableBody.innerHTML = "";
-      data.reviews.forEach(r => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${r.reviewID}</td>
-          <td>${"★".repeat(r.ratingStar)}${"☆".repeat(5 - r.ratingStar)}</td>
-          <td>${r.comment}</td>
-          <td>${new Date(r.createdAt).toLocaleDateString()}</td>
-          <td>
-            <button class="btn btn-warning btn-sm edit-btn" data-id="${r.reviewID}">Edit</button>
-            <button class="btn btn-danger btn-sm delete-btn" data-id="${r.reviewID}">Delete</button>
-          </td>
-        `;
-
-        reviewsTableBody.appendChild(tr);
-      });
-
-      // Wire edit buttons
-      document.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.addEventListener("click", () => loadIntoForm(btn.dataset.id, data.reviews));
-      });
-
-      // Wire delete buttons
-      document.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", () => deleteReview(btn.dataset.id));
-      });
+      allReviews = data.reviews;
+      renderReviews(allReviews);
     } catch (err) {
       console.error("❌ Error loading reviews:", err);
     }
   }
 
-  // Load review into form for editing
-  function loadIntoForm(reviewID, reviews) {
-    const review = reviews.find(r => r.reviewID === reviewID);
+  function renderReviews(reviews) {
+    reviewsTableBody.innerHTML = "";
+    reviews.forEach(r => {
+        const tr = document.createElement("tr");
+        // const truncated = r.comment.length > 40 ? r.comment.slice(0, 40) + "…" : r.comment;
+
+        tr.innerHTML = `
+            <td>
+                <div class="suggestion-description"
+                data-full-text="${r.comment.replace(/"/g, '&quot;')}">
+                ${r.comment.length > 30 
+                    ? r.comment.substring(0, 30) + "..." 
+                    : r.comment}
+            </div>
+            </td>
+            <td>
+                <span class="review-date">${new Date(r.createdAt).toLocaleDateString()}</span>
+            </td>
+            <td>
+                <button class="btn btn-small btn-secondary edit-btn" data-id="${r.reviewID}" title="Edit Review">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-small btn-danger delete-btn" data-id="${r.reviewID}" title="Delete Review">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        reviewsTableBody.appendChild(tr);
+
+        // Tooltip events
+//         const descDiv = tr.querySelector('.review-description');
+// descDiv.addEventListener('mouseenter', (e) => showTooltip(e.target.dataset.fullText, e.target));
+//         // descDiv.addEventListener('mousemove', (e) => {
+//         //     if (tooltip) {
+//         //         tooltip.style.left = e.pageX + 10 + 'px';
+//         //         tooltip.style.top = e.pageY + 10 + 'px';
+//         //     }
+//         // });
+//         descDiv.addEventListener('mouseleave', hideTooltip);
+    });
+
+    // Wire edit/delete buttons
+    document.querySelectorAll(".edit-btn").forEach(btn =>
+        btn.addEventListener("click", () => loadIntoForm(btn.dataset.id))
+    );
+    document.querySelectorAll(".delete-btn").forEach(btn =>
+        btn.addEventListener("click", () => deleteReview(btn.dataset.id))
+    );
+}
+
+
+  function loadIntoForm(reviewID) {
+    const review = allReviews.find(r => r.reviewID == reviewID);
     if (!review) return;
 
-    reviewIDField.value = review.reviewID;
+    editingReviewID = review.reviewID;
     commentField.value = review.comment;
     currentRating = review.ratingStar;
     document.querySelectorAll("#reviewRating .star").forEach(s => {
@@ -83,10 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelBtn.style.display = "inline-block";
   }
 
-  // Cancel editing
   cancelBtn.addEventListener("click", () => {
     form.reset();
-    reviewIDField.value = "";
+    reviewFileInput.value = "";
+    editingReviewID = null;
     currentRating = 0;
     document.querySelectorAll("#reviewRating .star").forEach(s => (s.style.color = "#ccc"));
     submitBtn.style.display = "inline-block";
@@ -94,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelBtn.style.display = "none";
   });
 
-  // Submit new review
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const comment = commentField.value;
@@ -104,30 +127,29 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment, ratingStar: currentRating, files: [] }) // TODO: file upload handling
+        body: JSON.stringify({ comment, ratingStar: currentRating, files: [] })
       });
 
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
       alert("✅ Review added!");
-      form.reset();
+      cancelBtn.click();
       loadReviews();
     } catch (err) {
       alert("❌ " + err.message);
     }
   });
 
-  // Update review
   updateBtn.addEventListener("click", async () => {
+    if (!editingReviewID) return;
     const comment = commentField.value;
-    const reviewID = reviewIDField.value;
 
     try {
       const res = await fetch("/review?action=modify", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reviewID, comment, ratingStar: currentRating, files: [] })
+        body: JSON.stringify({ reviewID: editingReviewID, comment, ratingStar: currentRating, files: [] })
       });
 
       const data = await res.json();
@@ -140,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Delete review
   async function deleteReview(reviewID) {
     if (!confirm("Are you sure you want to delete this review?")) return;
 
@@ -161,6 +182,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Init load
+  window.reviewsTableModule = {
+    filterReviews(query) {
+      const q = query.toLowerCase();
+      const filtered = allReviews.filter(r => r.comment.toLowerCase().includes(q));
+      renderReviews(filtered);
+    }
+  };
+  window.reviewTooltip.initializeTooltipsForReviews();
+    if (window.reviewTooltip && typeof window.reviewTooltip.initializeTooltipsForReviews === "function") {
+    window.reviewTooltip.initializeTooltipsForReviews();
+}
+
+  // Initial load
   loadReviews();
 });

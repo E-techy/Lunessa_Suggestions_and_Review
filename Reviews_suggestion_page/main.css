@@ -81,8 +81,6 @@
 
 .review-description:hover {
     color: #1f2937;
-    text-decoration: underline;
-    text-decoration-style: dotted;
 }
 
 .review-date {
@@ -95,6 +93,7 @@
     display: flex;
     align-items: center;
     gap: 2px;
+    color: #fbbf24;
 }
 
 .review-rating-small .star {
@@ -348,11 +347,9 @@
 
 .suggestion-description:hover {
     color: #1f2937;
-    text-decoration: underline;
-    text-decoration-style: dotted;
 }
 
-.suggestion-status {
+.suggestion-status , .status-badge{
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -387,6 +384,33 @@
     font-weight: 500;
 }
 
+
+.status-under-review {
+    color: #2196f3;
+    background-color: rgba(33, 150, 243, 0.1);
+    border-color: rgba(33, 150, 243, 0.2);
+}
+
+.status-live {
+    color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.2);
+    animation: pulse-live 2s infinite;
+}
+
+.status-completed {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.2);
+}
+
+
+
+.status-unknown {
+    color: #6c757d;
+    background-color: rgba(108, 117, 125, 0.1);
+    border-color: rgba(108, 117, 125, 0.2);
+}
 .suggestions-table tbody:empty::after {
     content: "No suggestions match your filters. Try adjusting your search criteria or clear filters to see all suggestions.";
     display: block;
@@ -674,6 +698,9 @@
     gap: 8px;
 }
 
+.normal-reviews-tabs {
+    gap: 8px;
+}
 .filter-dropdown {
     display: flex;
     align-items: center;
