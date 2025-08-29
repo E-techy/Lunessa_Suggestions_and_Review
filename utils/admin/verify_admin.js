@@ -47,7 +47,7 @@ async function verifyAdmin(apiKey, authToken, jwtSecret) {
     }
 
     // Find admin in database
-    const admin = await prisma.admin.findUnique({
+    const admin = await prisma.Admin.findUnique({
       where: { username },
     });
 
