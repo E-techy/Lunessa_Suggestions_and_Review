@@ -29,6 +29,8 @@ const getActiveSuggestions = require("./utils/suggestions_data_fetching/get_acti
 
 const getCompletedSuggestions = require("./utils/suggestions_data_fetching/get_completed_suggestion");
 
+const getLiveSuggestions = require("./utils/suggestions_data_fetching/get_live_suggestion");
+
 const app = express();
 require("dotenv").config();
 const modelName = process.env.AI_MODEL;
@@ -632,6 +634,58 @@ app.post("/completed_suggestions", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error occurred while fetching completed suggestions.",
+      suggestions: [],
+    });
+  }
+});
+
+// get the live suggestions
+app.post("/live_suggestions", async (req, res) => {
+  try {
+    const { timestamp, filterType } = req.query;
+
+    // ✅ Validate timestamp if provided
+    let parsedTimestamp = null;
+    if (timestamp) {
+      const dateObj = new Date(timestamp);
+      if (!isNaN(dateObj.getTime())) {
+        parsedTimestamp = dateObj;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid timestamp format. Use ISO 8601 format like 2025-08-25T19:30:28.263+00:00",
+          suggestions: [],
+        });
+      }
+    }
+
+    // ✅ Validate filterType
+    const validFilterTypes = ["latest", "oldest"];
+    const appliedFilter = validFilterTypes.includes(filterType)
+      ? filterType
+      : "latest";
+
+    // 🔍 Fetch live suggestions
+    const result = await getLiveSuggestions({
+      timestamp: parsedTimestamp,
+      filterType: appliedFilter,
+    });
+
+    if (result.success) {
+      return res.json(result);
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch live suggestions.",
+        suggestions: [],
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error in /live_suggestions:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while fetching live suggestions.",
       suggestions: [],
     });
   }
