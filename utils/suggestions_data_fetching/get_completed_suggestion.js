@@ -11,12 +11,16 @@ const prisma = new PrismaClient();
  * @param {"latest"|"oldest"} [options.filterType="latest"] - Fetch order
  * @returns {Promise<{ success: boolean, suggestions?: Array<Object> }>}
  */
-async function getCompletedSuggestions({ timestamp = null, filterType = "latest" }) {
+async function getCompletedSuggestions({
+  timestamp = null,
+  filterType = "latest",
+}) {
   try {
     let whereCondition = {};
 
     if (timestamp) {
-      const cutoffDate = timestamp instanceof Date ? timestamp : new Date(timestamp);
+      const cutoffDate =
+        timestamp instanceof Date ? timestamp : new Date(timestamp);
 
       if (filterType === "latest") {
         whereCondition.createdAt = { lt: cutoffDate }; // before timestamp
@@ -41,25 +45,29 @@ async function getCompletedSuggestions({ timestamp = null, filterType = "latest"
     });
 
     // Fetch corresponding Suggestion details
-    const suggestionIds = completedSuggestions.map(cs => cs.suggestionId);
+    const suggestionIds = completedSuggestions.map((cs) => cs.suggestionId);
 
     let suggestions = await prisma.Suggestion.findMany({
       where: { suggestionId: { in: suggestionIds } },
     });
 
     // Merge data and strip username
-    const merged = completedSuggestions.map(cs => {
-      const suggestion = suggestions.find(s => s.suggestionId === cs.suggestionId);
+    const merged = completedSuggestions
+      .map((cs) => {
+        const suggestion = suggestions.find(
+          (s) => s.suggestionId === cs.suggestionId
+        );
 
-      if (!suggestion) return null;
+        if (!suggestion) return null;
 
-      const { username, ...restSuggestion } = suggestion;
+        const { username, ...restSuggestion } = suggestion;
 
-      return {
-        ...restSuggestion,
-        resolutionDate: cs.resolutionDate,
-      };
-    }).filter(Boolean);
+        return {
+          ...restSuggestion,
+          resolutionDate: cs.resolutionDate,
+        };
+      })
+      .filter(Boolean);
 
     return { success: true, suggestions: merged };
   } catch (error) {
@@ -69,4 +77,3 @@ async function getCompletedSuggestions({ timestamp = null, filterType = "latest"
 }
 
 module.exports = getCompletedSuggestions;
-
