@@ -6,7 +6,7 @@ const JWT_SECRET_KEY = "7xdP6EGzCqIrx4aAAQvHyvVfKxI9fkSdEyMyllB+uX8=";
 // The data you want to encode. This is the "payload" of the JWT.
 const payload = {
   userType: "authenticUser",
-  username: "johndoe123",
+  username: "whatsss1",
   name: "John Doe"
 };
 
