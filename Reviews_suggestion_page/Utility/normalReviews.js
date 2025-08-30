@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
+      console.log('annanjadsnjadsj');
+      
 
       const data = await res.json();
       if (!data.success) throw new Error(data.message || "Failed to fetch reviews");
