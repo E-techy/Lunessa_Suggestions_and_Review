@@ -44,12 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       data.data.forEach(r => {
         const stars = "★".repeat(r.ratingStar) + "☆".repeat(5 - r.ratingStar);
+        const formattedcreatedDate = new Date(r.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         const reviewHTML = `
           <div class="review-item">
             <div class="review-author">${r.name}</div>
             <div class="review-rating-small">${stars}</div>
             <div class="review-preview">${r.comment}</div>
-            <div class="review-date">${new Date(r.createdAt).toLocaleDateString()}</div>
+            <div class="review-date">${formattedcreatedDate}</div>
           </div>
         `;
         container.insertAdjacentHTML("afterbegin", reviewHTML);

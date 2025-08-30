@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json();
+      console.log("📡 Fetched Acive suggestions data:", data);
       if (!data.success) throw new Error(data.message || "Failed to fetch");
 
       renderSuggestions(type, data.suggestions);
@@ -127,6 +128,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const statusInfo = window.statusRenderer.getStatusInfo(s.suggestionStatus);
 
       const item = document.createElement("div");
+      const formattedcreatedDate = new Date(s.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+      const formattedlastdDate = new Date(s.lastModified).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+          });
       item.className = "status-item";
       item.innerHTML = `
         <div class="status-title">${s.name} - ${s.suggestionCategory}</div>
@@ -135,8 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <i class="${statusInfo.icon}"></i> ${s.suggestionStatus}
         </span>
         <div class="status-meta">
-          <span class="status-date">Created: ${new Date(s.createdAt).toLocaleDateString()}</span>
-          <span class="status-date">Last Modified: ${new Date(s.lastModified).toLocaleDateString()}</span>
+          <span class="status-date">Created: ${formattedcreatedDate}</span>
+          <span class="last-modified-date">Last Modified: ${formattedlastdDate}</span>
         </div>
         ${s.files && s.files.length > 0 ? `
           <div class="status-files">

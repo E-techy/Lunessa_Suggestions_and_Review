@@ -320,123 +320,127 @@
     </div>
 
 
-                    <div class="sidebar-section">
-                        <h4 class="sidebar-title">
-                            <i class="fas fa-check-circle"></i>
-                            Resolved & Implemented
-                        </h4>
-                        <div class="sidebar-tabs-container">
-                            <div class="sidebar-tabs">
-                                <button class="sidebar-tab-btn active" onclick="switchSidebarTab('resolved-implemented', 'live')">
-                                    <i class="fas fa-broadcast-tower"></i>
-                                    Live
-                                </button>
-                                <button class="sidebar-tab-btn" onclick="switchSidebarTab('resolved-implemented', 'completed')">
-                                    <i class="fas fa-check-double"></i>
-                                    Completed
-                                </button>
-                            </div>
-                            <div class="filter-dropdown">
-                                <select class="filter-select" id="resolvedImplementedFilter" onchange="filterResolvedImplemented(this.value)">
-                                    <option value="latest">Latest</option>
-                                    <option value="oldest">Oldest</option>
-                                </select>
-                            </div>
+                <div class="resolved-section">
+                    <h4 class="resolved-section-title">
+                        <i class="fas fa-check-circle"></i>
+                        Resolved & Implemented
+                    </h4>
+                    <div class="tabs-wrapper">
+                        <div class="live-tabs">
+                            <button class="resolved-tab-button active" data-tab="live-features">
+                                <i class="fas fa-broadcast-tower"></i>
+                                Live
+                            </button>
+                            <button class="resolved-tab-button" data-tab="completed-features">
+                                <i class="fas fa-check-double"></i>
+                                Completed
+                            </button>
                         </div>
-                        
-                        <!-- Live Features -->
-                        <div id="resolved-implemented-live" class="sidebar-tab-content active">
-                            <div class="status-item">
-                                <div class="status-title">Dark Mode Theme Toggle</div>
-                                <div class="status-desc">User-requested dark theme implementation for improved eye comfort during extended usage periods</div>
-                                <span class="status-badge badge-live">
+                        <div class="resolved-filter-wrapper">
+                            <select class="resolved-filter-select" id="resolved-sort-filter">
+                                <option value="latest">Latest</option>
+                                <option value="oldest">Oldest</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Features -->
+                    <div id="live-features" class="resolved-tab-content active">
+                        <div class="resolved-suggestion-list" id="liveSuggestionList">   
+                            <!-- <div class="live-feature-card">
+                                <div class="live-feature-title">Dark Mode Theme Toggle</div>
+                                <div class="live-feature-description">User-requested dark theme implementation for improved eye comfort during extended usage periods</div>
+                                <span class="live-feature-status live-badge-live">
                                     <i class="fas fa-broadcast-tower"></i>
                                     Live Production
                                 </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Deployed: Aug 22, 2025</span>
-                                    <span class="status-users">1,247 users activated</span>
+                                <div class="live-feature-meta">
+                                    <span class="live-feature-date">Deployed: Aug 22, 2025</span>
+                                    <span class="live-feature-users">1,247 users activated</span>
                                 </div>
                             </div>
-                            <div class="status-item">
-                                <div class="status-title">Advanced Conversation History</div>
-                                <div class="status-desc">Comprehensive chat export functionality with advanced filtering and search capabilities</div>
-                                <span class="status-badge badge-live">
+                            <div class="live-feature-card">
+                                <div class="live-feature-title">Advanced Conversation History</div>
+                                <div class="live-feature-description">Comprehensive chat export functionality with advanced filtering and search capabilities</div>
+                                <span class="live-feature-status live-badge-live">
                                     <i class="fas fa-star"></i>
                                     Live & Featured
                                 </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Deployed: Aug 20, 2025</span>
-                                    <span class="status-users">892 active users</span>
+                                <div class="live-featuresfeature-meta">
+                                    <span class="live-featuresfeature-date">Deployed: Aug 20, 2025</span>
+                                    <span class="live-featuresfeature-users">892 active users</span>
                                 </div>
                             </div>
-                            <div class="status-item">
-                                <div class="status-title">Database Query Optimization</div>
-                                <div class="status-desc">Performance improvements for suggestion search functionality during peak usage hours</div>
-                                <span class="status-badge badge-live">
+                            <div class="live-feature-card">
+                                <div class="live-feature-title">Database Query Optimization</div>
+                                <div class="live-feature-description">Performance improvements for suggestion search functionality during peak usage hours</div>
+                                <span class="live-feature-status live-badge-live">
                                     <i class="fas fa-tachometer-alt"></i>
                                     Live & Optimized
                                 </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Deployed: Aug 17, 2025</span>
-                                    <span class="status-performance">40% faster queries</span>
+                                <div class="live-feature-meta">
+                                    <span class="live-feature-date">Deployed: Aug 17, 2025</span>
+                                    <span class="live-feature-performance">40% faster queries</span>
                                 </div>
-                            </div>
-                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <button class="btn-load-more" onclick="loadMoreResolvedImplemented()">
-                                    <i class="fas fa-chevron-down"></i>
-                                    Load More
+                            </div> -->
+                        </div> 
+                        <div class="live-load-more-wrapper" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                            <button class="live-load-more-button" id="loadMoreLive-suggestion">
+                                <i class="fas fa-chevron-down"></i>
+                                Load More
                             </button>
                         </div>
-                        </div>
-                        
-                        <!-- Completed Features -->
-                        <div id="resolved-implemented-completed" class="sidebar-tab-content">
-                            <div class="status-item">
-                                <div class="status-title">SSO Integration Module</div>
-                                <div class="status-desc">Enterprise single sign-on authentication with SAML 2.0 and OAuth 2.0 support successfully deployed</div>
-                                <span class="status-badge badge-completed">
+                    </div>
+                    
+                    <!-- Completed Features -->
+                    <div id="completed-features" class="resolved-tab-content">
+                        <div class="resolved-suggestion-list" id="completedSuggestionList">
+                            <!-- <div class="completed-feature-card">
+                                <div class="completed-feature-title">SSO Integration Module</div>
+                                <div class="completed-feature-description">Enterprise single sign-on authentication with SAML 2.0 and OAuth 2.0 support successfully deployed</div>
+                                <span class="completed-feature-status completed-badge-completed">
                                     <i class="fas fa-check"></i>
                                     Fully Completed
                                 </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Completed: Aug 14, 2025</span>
-                                    <span class="status-satisfaction">98% user satisfaction</span>
+                                <div class="completed-feature-meta">
+                                    <span class="completed-feature-date">Completed: Aug 14, 2025</span>
+                                    <span class="completed-feature-satisfaction">98% user satisfaction</span>
                                 </div>
                             </div>
-                            <div class="status-item">
-                                <div class="status-title">Navigation Menu Redesign</div>
-                                <div class="status-desc">Intuitive navigation restructure with improved accessibility and user experience enhancements</div>
-                                <span class="status-badge badge-completed">
+                            <div class="completed-feature-card">
+                                <div class="completed-feature-title">Navigation Menu Redesign</div>
+                                <div class="completed-feature-description">Intuitive navigation restructure with improved accessibility and user experience enhancements</div>
+                                <span class="completed-feature-status completed-badge-completed">
                                     <i class="fas fa-check-double"></i>
                                     Design Completed
                                 </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Completed: Aug 25, 2025</span>
-                                    <span class="status-satisfaction">95% user approval</span>
+                                <div class="completed-feature-meta">
+                                    <span class="completed-feature-date">Completed: Aug 25, 2025</span>
+                                    <span class="completed-feature-satisfaction">95% user approval</span>
                                 </div>
                             </div>
-                            <div class="status-item">
-                                <div class="status-title">WCAG 2.1 AA Compliance</div>
-                                <div class="status-desc">Comprehensive accessibility improvements including keyboard navigation and screen reader support</div>
-                                <span class="status-badge badge-completed">
+                            <div class="completed-feature-card">
+                                <div class="completed-feature-title">WCAG 2.1 AA Compliance</div>
+                                <div class="completed-feature-description">Comprehensive accessibility improvements including keyboard navigation and screen reader support</div>
+                                <span class="completed-feature-status completed-badge-completed">
                                     <i class="fas fa-universal-access"></i>
                                     Accessibility Certified
                                 </span>
-                                <div class="status-meta">
-                                    <span class="status-date">Completed: Aug 26, 2025</span>
-                                    <span class="status-certification">WCAG 2.1 AA Certified</span>
+                                <div class="completed-feature-meta">
+                                    <span class="completed-feature-date">Completed: Aug 26, 2025</span>
+                                    <span class="completed-feature-certification">WCAG 2.1 AA Certified</span>
                                 </div>
-                            </div>
-                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <button class="btn-load-more" onclick="loadMoreResolvedImplemented()">
-                                    <i class="fas fa-chevron-down"></i>
-                                    Load More
+                            </div> -->
+                        </div>
+                        <div class="completed-load-more-wrapper" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                            <button class="completed-load-more-button" id="loadMoreCompleted-suggestion">
+                                <i class="fas fa-chevron-down"></i>
+                                Load More
                             </button>
                         </div>
-                        </div>
-                        
                     </div>
+                </div>
+
                 </div>
                 <div class="suggestions-grid">
                     <div class="form-section">
@@ -577,5 +581,32 @@
     <script type="module" src="./Utility/normalReviews.js"></script>
     <script type="module" src="./Utility/suggestions.js"></script>
     <script type="module" src="./Utility/active_issues.js"></script>
+    <script type="module" src="./Utility/live_suggestions.js"></script>
+    <script type="module" src="./Utility/completed_suggestions.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+  const tabButtons = document.querySelectorAll(".resolved-tab-button");
+  const tabContents = document.querySelectorAll(".resolved-tab-content");
+
+  tabButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const targetTab = button.dataset.tab;
+
+      // 1️⃣ Remove 'active' from all buttons and add to clicked one
+      tabButtons.forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // 2️⃣ Hide all tab contents and show target
+      tabContents.forEach(content => {
+        if (content.id === targetTab) {
+          content.classList.add("active");
+        } else {
+          content.classList.remove("active");
+        }
+      });
+    });
+  });
+});
+    </script>
 </body>
 </html>

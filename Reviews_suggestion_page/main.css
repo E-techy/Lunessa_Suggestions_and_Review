@@ -83,12 +83,6 @@
     color: #1f2937;
 }
 
-.review-date {
-    color: #6b7280;
-    font-size: 14px;
-    font-weight: 500;
-}
-
 .review-rating-small {
     display: flex;
     align-items: center;
@@ -349,7 +343,9 @@
     color: #1f2937;
 }
 
-.suggestion-status , .status-badge{
+.suggestion-status , .status-badge
+,.completed-feature-status
+,.live-feature-status{
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -489,7 +485,8 @@
 }
 
 /* Ensure sidebar tabs maintain proper styling */
-.sidebar-tabs .sidebar-tab-btn {
+.sidebar-tabs .sidebar-tab-btn ,
+.live-tabs .resolved-tab-button{
     flex: 1;
     min-width: auto;
 }
@@ -619,7 +616,9 @@
 
 /* Animation for newly loaded items */
 .review-item,
-.status-item {
+.status-item 
+,.live-feature-card
+,.completed-feature-card{
     transition: all 0.3s ease;
 }
 
@@ -686,7 +685,8 @@
 }
 
 /* Filter Dropdown Styles for Sidebar */
-.sidebar-tabs-container {
+.sidebar-tabs-container 
+,.tabs-wrapper{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -694,14 +694,16 @@
     gap: 12px;
 }
 
-.sidebar-tabs {
+.sidebar-tabs,
+.live-tabs {
     gap: 8px;
 }
 
 .normal-reviews-tabs {
     gap: 8px;
 }
-.filter-dropdown {
+.filter-dropdown 
+,.resolved-filter-wrapper{
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -709,7 +711,8 @@
     padding: 4px;
 }
 
-.filter-select {
+.filter-select 
+,.resolved-filter-select{
     padding: 6px 10px;
     font-size: 12px;
     border: 1px solid #d1d5db;
@@ -722,12 +725,14 @@
     font-weight: 500;
 }
 
-.filter-select:hover {
+.filter-select:hover 
+,.resolved-filter-select:hover{
     border-color: #9ca3af;
     background: #f9fafb;
 }
 
-.filter-select:focus {
+.filter-select:focus 
+.resolved-filter-select:focus{
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -735,17 +740,20 @@
 
 /* Responsive adjustments for filter dropdown */
 @media (max-width: 768px) {
-    .sidebar-tabs-container {
+    .sidebar-tabs-container 
+    ,.tabs-wrapper{
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
     }
     
-    .filter-dropdown {
+    .filter-dropdown 
+    ,.resolved-filter-wrapper{
         justify-content: center;
     }
     
-    .filter-select {
+    .filter-select 
+    ,.resolved-filter-select{
         width: 100%;
         max-width: 120px;
     }

@@ -59,7 +59,8 @@
         grid-template-columns: 1fr;
     }
     
-    .sidebar-section {
+    .sidebar-section 
+    ,.resolved-section{
         padding: 20px;
     }
 }
