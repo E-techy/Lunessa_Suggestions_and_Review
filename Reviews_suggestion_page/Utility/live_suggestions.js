@@ -5,12 +5,11 @@ const LIVE_PAGE_SIZE = 4;
 // Fetch live suggestions from server
 async function fetchLiveSuggestions({ reset = false } = {}) {
   try {
-    console.log('hshshhs');
-    
     console.log("🚀 Fetching live suggestions...", { reset, liveLastTimestamp, liveFilterType });
 
     const url = new URL("/live_suggestions", window.location.origin);
     url.searchParams.append("filterType", liveFilterType);
+
     if (liveLastTimestamp && !reset) {
       url.searchParams.append("timestamp", liveLastTimestamp.toISOString());
       console.log("📅 Using timestamp for pagination:", liveLastTimestamp);
@@ -18,7 +17,7 @@ async function fetchLiveSuggestions({ reset = false } = {}) {
 
     const res = await fetch(url, { method: "POST" });
     const data = await res.json();
-    
+
     console.log("📦 Server response:", data);
 
     if (data.success) {
@@ -67,8 +66,8 @@ function renderLiveSuggestions(suggestions, reset = false) {
     const card = document.createElement("div");
     card.className = "live-feature-card";
     card.innerHTML = `
-      <div class="live-feature-title">${s.suggestionDescription}</div>
-      <div class="live-feature-description">${s.suggestionCategory}</div>
+      <div class="live-feature-title">${s.suggestionCategory}</div>
+      <div class="live-feature-description">${s.suggestionDescription}</div>
       <span class="live-feature-status live-badge-live">
         <i class="fas fa-broadcast-tower"></i> Live
       </span>
@@ -80,24 +79,6 @@ function renderLiveSuggestions(suggestions, reset = false) {
     `;
     container.appendChild(card);
   });
-
-  // Ensure Load More button exists
-  if (!document.querySelector("#loadMoreLive-suggestion") && suggestions.length === LIVE_PAGE_SIZE) {
-    console.log("➕ Adding Load More button");
-    const loadMoreDiv = document.createElement("div");
-    loadMoreDiv.className = "live-load-more-wrapper";
-    loadMoreDiv.style.cssText = "text-align: center; margin-top: 16px; padding-top: 16px; border-top:1px solid #e5e7eb;";
-    loadMoreDiv.innerHTML = `
-      <button class="live-load-more-button" id="loadMoreLive-suggestion">
-        <i class="fas fa-chevron-down"></i> Load More
-      </button>
-    `;
-    container.appendChild(loadMoreDiv);
-
-  // ✅ bind after adding
-  document.getElementById("loadMoreLive-suggestion").addEventListener("click", loadMoreLiveSuggestions);
-}
-
 }
 
 // Filter dropdown handler
@@ -124,5 +105,12 @@ document.addEventListener("DOMContentLoaded", () => {
     filterSelect.addEventListener("change", (e) => filterLiveSuggestions(e.target.value));
   }
 
+  // always attach load more listener (button is always in DOM)
+  const loadMoreBtn = document.getElementById("loadMoreLive-suggestion");
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener("click", loadMoreLiveSuggestions);
+  }
+
+  // first fetch
   fetchLiveSuggestions({ reset: true });
 });

@@ -19,21 +19,23 @@ async function getLiveSuggestions({ timestamp = null, filterType = "latest" }) {
       const cutoffDate = timestamp instanceof Date ? timestamp : new Date(timestamp);
 
       if (filterType === "latest") {
-        whereCondition.createdAt = { lt: cutoffDate }; // get before timestamp
+        // Only those created strictly before the timestamp
+        whereCondition.createdAt = { lt: cutoffDate };
       } else if (filterType === "oldest") {
-        whereCondition.createdAt = { gt: cutoffDate }; // get after timestamp
+        // Only those created strictly after the timestamp
+        whereCondition.createdAt = { gt: cutoffDate };
       }
     }
 
     // Sorting order
     let orderByCondition = {};
     if (filterType === "latest") {
-      orderByCondition = { createdAt: "desc" };
+      orderByCondition = { createdAt: "desc" }; // newest → oldest
     } else {
-      orderByCondition = { createdAt: "asc" };
+      orderByCondition = { createdAt: "asc" }; // oldest → newest
     }
 
-    // Get 4 live suggestion trackers
+    // Fetch 4 live suggestions
     const liveSuggestions = await prisma.LiveSuggestion.findMany({
       where: whereCondition,
       orderBy: orderByCondition,
@@ -47,13 +49,16 @@ async function getLiveSuggestions({ timestamp = null, filterType = "latest" }) {
       where: { suggestionId: { in: suggestionIds } },
     });
 
-    // Remove username field
-    const cleaned = suggestions.map(s => {
-      const { username, ...rest } = s;
-      return rest;
-    });
+    // Map by id
+    const suggestionMap = new Map(suggestions.map(s => [s.suggestionId, s]));
 
-    return { success: true, suggestions: cleaned };
+    // Rebuild preserving order of liveSuggestions
+    const orderedSuggestions = liveSuggestions.map(ls => {
+      const { username, ...rest } = suggestionMap.get(ls.suggestionId) || {};
+      return rest;
+    }).filter(Boolean);
+
+    return { success: true, suggestions: orderedSuggestions };
   } catch (error) {
     console.error("❌ Error fetching live suggestions:", error);
     return { success: false };
