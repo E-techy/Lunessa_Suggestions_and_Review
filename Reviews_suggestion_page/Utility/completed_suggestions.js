@@ -114,20 +114,23 @@ function renderCompletedSuggestions(suggestions, reset = false) {
     container.appendChild(card);
   });
 
-  // Ensure Load More button exists
-  if (!document.querySelector("#loadMoreCompleted-suggestion")) {
-    console.log("➕ Adding Load More button");
-    const loadMoreDiv = document.createElement("div");
-    loadMoreDiv.className = "completed-load-more-wrapper";
-    loadMoreDiv.style.cssText = "text-align: center; margin-top: 16px; padding-top: 16px; border-top:1px solid #e5e7eb;";
-    loadMoreDiv.innerHTML = `
-      <button class="completed-load-more-button" id="loadMoreCompleted-suggestion">
-        <i class="fas fa-chevron-down"></i> Load More
-      </button>
-    `;
-    container.appendChild(loadMoreDiv);
-  }
+  // // Ensure Load More button exists
+  // if (!document.querySelector("#loadMoreCompleted-suggestion")) {
+  //   console.log("➕ Adding Load More button");
+  //   const loadMoreDiv = document.createElement("div");
+  //   loadMoreDiv.className = "completed-load-more-wrapper";
+  //   loadMoreDiv.style.cssText = "text-align: center; margin-top: 16px; padding-top: 16px; border-top:1px solid #e5e7eb;";
+  //   loadMoreDiv.innerHTML = `
+  //     <button class="completed-load-more-button" id="loadMoreCompleted-suggestion">
+  //       <i class="fas fa-chevron-down"></i> Load More
+  //     </button>
+  //   `;
+  //   container.appendChild(loadMoreDiv);
+  // }
+
 }
+
+document.getElementById("loadMoreCompleted-suggestion").addEventListener("click",loadMoreCompletedSuggestions);
 
 // Filter dropdown handler
 function filterCompletedSuggestions(value) {
