@@ -45,6 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
     reviews.forEach(r => {
         const tr = document.createElement("tr");
         // const truncated = r.comment.length > 40 ? r.comment.slice(0, 40) + "…" : r.comment;
+        const formattedCreatedDate = new Date(r.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+          });
 
         tr.innerHTML = `
             <td>
@@ -56,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             </td>
             <td>
-                <span class="review-date">${new Date(r.createdAt).toLocaleDateString()}</span>
+                <span class="review-date">${formattedCreatedDate}</span>
             </td>
             <td>
                 <button class="btn btn-small btn-secondary edit-btn" data-id="${r.reviewID}" title="Edit Review">

@@ -5,7 +5,8 @@
     gap: 24px;
 }
 
-.sidebar-section {
+.sidebar-section 
+,.resolved-section{
     background: var(--surface-elevated);
     padding: 28px;
     border-radius: 16px;
@@ -13,7 +14,8 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-title {
+.sidebar-title 
+,.resolved-section-title{
     font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: 20px;
@@ -23,7 +25,9 @@
     gap: 10px;
 }
 
-.review-item, .status-item {
+.review-item, .status-item 
+,.live-feature-card
+,.completed-feature-card{
     background: var(--surface);
     padding: 20px;
     border-radius: 12px;
@@ -32,26 +36,34 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.review-item:hover, .status-item:hover {
+.review-item:hover, .status-item:hover 
+,.live-feature-card:hover
+,.completed-feature-card:hover{
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
 }
 
-.review-author, .status-title {
+.review-author, .status-title 
+,.live-feature-title
+,.completed-feature-title{
     font-weight: 700;
     color: var(--accent);
     margin-bottom: 8px;
     font-size: 0.875rem;
 }
 
-.review-preview, .status-desc {
+.review-preview, .status-desc 
+,.live-feature-description
+,.completed-feature-description{
     color: var(--text-secondary);
     font-size: 0.875rem;
     line-height: 1.5;
     margin-bottom: 12px;
 }
 
-.status-badge {
+.status-badge 
+,.live-feature-status
+,.completed-feature-status{
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -81,14 +93,16 @@
     border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
-.badge-live {
+.badge-live 
+,.live-badge-live{
     background: rgba(16, 185, 129, 0.15);
     color: #059669;
     border: 1px solid rgba(16, 185, 129, 0.3);
     animation: livePulse 2s ease-in-out infinite;
 }
 
-.badge-completed {
+.badge-completed 
+,.completed-badge-completed{
     background: rgba(99, 102, 241, 0.1);
     color: #4f46e5;
     border: 1px solid rgba(99, 102, 241, 0.2);
@@ -99,7 +113,8 @@
     border-color: rgba(33, 150, 243, 0.2);
 }
 
-.badge-live {
+.badge-live 
+,.live-badge-live{
     color: #4caf50;
     background-color: rgba(76, 175, 80, 0.1);
     border-color: rgba(76, 175, 80, 0.2);
@@ -119,7 +134,8 @@
 }
 
 /* Sidebar Tab Styles */
-.sidebar-tabs {
+.sidebar-tabs 
+,.live-tabs{
     display: inline-flex;
     gap: 4px;
     margin-bottom: 20px;
@@ -129,7 +145,8 @@
     border: 1px solid var(--border);
 }
 
-.sidebar-tab-btn ,.sidebar-active-issue-btn {
+.sidebar-tab-btn ,.sidebar-active-issue-btn,
+.resolved-tab-button{
     flex: 1;
     display: flex;
     align-items: center;
@@ -147,31 +164,37 @@
     white-space: nowrap;
 }
 
-.sidebar-tab-btn:hover ,.sidebar-active-issue-btn:hover{
+.sidebar-tab-btn:hover ,.sidebar-active-issue-btn:hover
+,.resolved-tab-button:hover{
     background: var(--surface-elevated);
     color: var(--text-primary);
 }
 
-.sidebar-tab-btn.active , .sidebar-active-issue-btn.active{
+.sidebar-tab-btn.active , .sidebar-active-issue-btn.active
+,.resolved-tab-button.active{
     background: var(--accent);
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-tab-btn i  , .sidebar-active-issue-btn i{
+.sidebar-tab-btn i  , .sidebar-active-issue-btn i
+,.resolved-tab-button i{
     font-size: 10px;
     opacity: 0.8;
 }
 
-.sidebar-tab-btn.active i , .sidebar-active-issue-btn.active i{
+.sidebar-tab-btn.active i , .sidebar-active-issue-btn.active i
+,.resolved-tab-button.active i{
     opacity: 1;
 }
 
-.sidebar-tab-content , .sidebar-active-issue-content {
+.sidebar-tab-content , .sidebar-active-issue-content 
+,.resolved-tab-content{
     display: none;
 }
 
-.sidebar-tab-content.active , .sidebar-active-issue-content.active{
+.sidebar-tab-content.active , .sidebar-active-issue-content.active
+,.resolved-tab-content.active{
     display: block;
 }
 
@@ -199,7 +222,9 @@
 }
 
 /* Status Meta Information */
-.status-meta {
+.status-meta 
+,.live-feature-meta
+,.completed-feature-meta{
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -208,7 +233,9 @@
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.status-date {
+.status-date 
+,.live-feature-date
+,.completed-feature-date{
     font-size: 11px;
     color: var(--text-light);
     font-weight: 500;
@@ -254,7 +281,9 @@
     border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
-.status-users {
+.status-users 
+,.live-feature-users
+,.completed-feature-users{
     font-size: 11px;
     color: #059669;
     font-weight: 500;
@@ -264,7 +293,8 @@
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
-.status-performance {
+.status-performance 
+,.live-feature-performance{
     font-size: 11px;
     color: #7c3aed;
     font-weight: 500;
@@ -274,7 +304,8 @@
     border: 1px solid rgba(124, 58, 237, 0.2);
 }
 
-.status-satisfaction {
+.status-satisfaction 
+,.completed-feature-satisfaction{
     font-size: 11px;
     color: #0891b2;
     font-weight: 500;
@@ -284,7 +315,8 @@
     border: 1px solid rgba(8, 145, 178, 0.2);
 }
 
-.status-certification {
+.status-certification 
+,.completed-feature-certification{
     font-size: 11px;
     color: #7c2d12;
     font-weight: 500;
@@ -293,7 +325,16 @@
     border-radius: 4px;
     border: 1px solid rgba(124, 45, 18, 0.2);
 }
-
+.live-feature-modified-date,
+.last-modified-date{
+    font-size: 11px;
+    color: #F59E0B;
+    font-weight: 500;
+    padding: 2px 6px;
+    background: antiquewhite;
+    border-radius: 4px;
+    border: 1px solid rgba(124, 45, 18, 0.2);
+}
 
 
 .normal-tab-btn {
@@ -415,12 +456,24 @@
 .normal-review-rating .star.active {
     color: #fbbf24;
 }
-.normal-review-comment, .status-desc {
+.normal-review-comment,
+.status-desc,
+.live-feature-description,
+.completed-feature-description {
     color: var(--text-secondary);
     font-size: 0.875rem;
     line-height: 1.5;
     margin-bottom: 12px;
+    border-radius: 4px;
+
+    /* Make it fit parent div */
+    width: 100%;
+    max-width: 100%;
+    overflow-wrap: break-word; /* modern word-wrap */
+    word-break: break-word;     /* ensures long words break */
+    box-sizing: border-box;     /* padding included in width */
 }
+
 .normal-review-date {
     font-size: 11px;
     color: var(--text-light);

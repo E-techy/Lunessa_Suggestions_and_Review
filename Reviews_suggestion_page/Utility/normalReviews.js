@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
+      console.log('annanjadsnjadsj');
+      
 
       const data = await res.json();
       if (!data.success) throw new Error(data.message || "Failed to fetch reviews");
@@ -60,14 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // Render each review
       data.reviews.forEach(r => {
         const stars = "★".repeat(r.ratingStar) + "☆".repeat(5 - r.ratingStar);
+        const formattedcreatedDate = new Date(r.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         const reviewHTML = `
           <div class="normal-review-item">
             <div class="normal-review-author">${r.name}</div>
             <div class="normal-review-rating">${stars}</div>
             <div class="normal-review-comment">${r.comment}</div>
-            <div class="normal-review-date">${new Date(
-              r.createdAt
-            ).toLocaleDateString()}</div>
+            <div class="normal-review-date">${formattedcreatedDate}</div>
           </div>
         `;
         container.insertAdjacentHTML("beforeend", reviewHTML);
