@@ -6,45 +6,20 @@
     <title>AI Customer Service Platform - Professional Feedback Portal</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="main.css" rel="stylesheet">
-    <!-- Separated JavaScript Modules -->
     <script src="utils/notifications.js" defer></script>
     <script src="utils/rating.js" defer></script>
     <script src="utils/fileUpload.js" defer></script>
     <script src="utils/forms.js" defer></script>
-    <!-- <script src="utils/suggestionsTable.js" defer></script> -->
     <script src="utils/tabs.js" defer></script>
     <script src="utils/animations.js" defer></script>
-    <!-- <script src="utils/loadMore.js" defer></script> -->
     <script src="utils/main.js" defer></script>
 
-    <!-- reviewTable populate -->
-    <!-- <script src="utils/reviewsTable_populate/reviewsData.js"></script>
-    <script src="utils/reviewsTable_populate/dataManager.js"></script>
-    <script src="utils/reviewsTable_populate/formManager.js"></script>
-    <script src="utils/reviewsTable_populate/helpers.js"></script>
-    <script src="utils/reviewsTable_populate/main.js"></script>
-    <script src="utils/reviewsTable_populate/reviewActions.js"></script>
-    <script src="utils/reviewsTable_populate/tableRenderer.js"></script> -->
-    <script src="utils/reviewsTable_populate/tooltips.js"></script>
+    <!-- reviewTable tooltip-->
+    <script src="utils/reviewsTable/tooltips.js"></script>
 
-    <!-- suggestionTable populate -->
-    <!-- <script src="utils/suggestionsTable_populate/suggestion_sample_data.js"></script>
-    <script src="utils/suggestionsTable_populate/config.js"></script>
-    <script src="utils/suggestionsTable_populate/dataManager.js"></script>
-    <script src="utils/suggestionsTable_populate/filterManager.js"></script>
-    <script src="utils/suggestionsTable_populate/editManager.js"></script>
-    <script src="utils/suggestionsTable_populate/renderer.js"></script>
-    <script src="utils/suggestionsTable_populate/main.js"></script> -->
-    <script src="utils/suggestionsTable_populate/tooltipManager.js"></script>
+    <!-- suggestionTable tooltip -->
+    <script src="utils/suggestionsTable/tooltipManager.js"></script>
 
-    <!-- sidebar data handled-->
-    <!-- <script src="utils/sidebar_handled/sampleData.js"></script>
-    <script src="utils/sidebar_handled/animationUtils.js"></script>
-    <script src="utils/sidebar_handled/loadMoreConfig.js"></script>
-    <script src="utils/sidebar_handled/loadMoreModule.js"></script>
-    <script src="utils/sidebar_handled/main.js"></script>
-    <script src="utils/sidebar_handled/debugUtils.js"></script>
-    <script src="utils/sidebar_handled/templateUtils.js"></script> -->
 </head>
 <body>
     <div class="container"> 
@@ -199,7 +174,7 @@
                                 </button>
                             </div>
 
-        <!-- Latest Top-Rated Reviews -->
+                            <!-- Latest Top-Rated Reviews -->
                             <div id="top-rated-latest" class="sidebar-tab-content active">
                                 <div class="reviews-list">
                                     <!-- reviews inserted dynamically -->
@@ -235,12 +210,12 @@
                             <!-- Tabs -->
                             <div class="normal-reviews-tabs">
                                 <button class="normal-tab-btn active" data-tab="latest">
-                                <i class="fas fa-arrow-up"></i>
-                                Latest
+                                    <i class="fas fa-arrow-up"></i>
+                                    Latest
                                 </button>
                                 <button class="normal-tab-btn" data-tab="oldest">
-                                <i class="fas fa-arrow-down"></i>
-                                Oldest
+                                    <i class="fas fa-arrow-down"></i>
+                                    Oldest
                                 </button>
                             </div>
 
@@ -248,9 +223,9 @@
                             <div id="normal-reviews-latest" class="normal-tab-content active">
                                 <div class="normal-reviews-list"></div>
                                 <div class="normal-load-more-container">
-                                <button class="normal-btn-load-more" data-type="latest">
-                                    <i class="fas fa-chevron-down"></i> Load More
-                                </button>
+                                    <button class="normal-btn-load-more" data-type="latest">
+                                        <i class="fas fa-chevron-down"></i> Load More
+                                    </button>
                                 </div>
                             </div>
 
@@ -258,9 +233,9 @@
                             <div id="normal-reviews-oldest" class="normal-tab-content">
                                 <div class="normal-reviews-list"></div>
                                 <div class="normal-load-more-container">
-                                <button class="normal-btn-load-more" data-type="oldest">
-                                    <i class="fas fa-chevron-down"></i> Load More
-                                </button>
+                                    <button class="normal-btn-load-more" data-type="oldest">
+                                        <i class="fas fa-chevron-down"></i> Load More
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -271,178 +246,101 @@
             <!-- Suggestions/Errors Tab -->
             <div id="suggestions" class="tab-content">
                 <div class="suggestions-status">
-                    
-    <div class="sidebar-section">
-    <h4 class="sidebar-title">
-        <i class="fas fa-hourglass-half"></i>
-        Active Issues
-    </h4>
-    <div class="sidebar-tabs-container">
-        <div class="sidebar-tabs">
-            <button class="sidebar-active-issue-btn active" data-tab="pending-active-issue" >
-                <i class="fas fa-clock"></i>
-                Pending
-            </button>
-            <button class="sidebar-active-issue-btn" data-tab="active-active-issue" >
-                <i class="fas fa-cog"></i>
-                Active
-            </button>
-        </div>
-        <div class="filter-dropdown">
-            <select class="filter-select" id="activeIssuesFilter">
-                <option value="latest">Latest</option>
-                <option value="oldest">Oldest</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Pending Active Issues -->
-    <div id="active-issues-pending" class="sidebar-active-issue-content active">
-        <div class="issues-list" id="pendingIssuesList"></div>
-        <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-        <button class="btn-load-more-pending-issue" id="loadMorePending-issue" >
-            <i class="fas fa-chevron-down"></i>
-            Load More
-        </button>
-    </div>
-    </div>
-
-    <!-- Active Issues -->
-    <div id="active-issues-active" class="sidebar-active-issue-content">
-        <div class="issues-list" id="activeIssuesList-issue"></div>
-        <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-        <button class="btn-load-more-active-issue" id="loadMoreActive">
-            <i class="fas fa-chevron-down"></i>
-            Load More
-        </button>
-    </div>
-    </div>
-    </div>
-
-
-                <div class="resolved-section">
-                    <h4 class="resolved-section-title">
-                        <i class="fas fa-check-circle"></i>
-                        Resolved & Implemented
-                    </h4>
-                    <div class="tabs-wrapper">
-                        <div class="live-tabs">
-                            <button class="resolved-tab-button active" data-tab="resolved-live">
-                                <i class="fas fa-broadcast-tower"></i>
-                                Live
-                            </button>
-                            <button class="resolved-tab-button" data-tab="resolved-completed">
-                                <i class="fas fa-check-double"></i>
-                                Completed
-                            </button>
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">
+                            <i class="fas fa-hourglass-half"></i>
+                            Active Issues
+                        </h4>
+                        <div class="sidebar-tabs-container">
+                            <div class="sidebar-tabs">
+                                <button class="sidebar-active-issue-btn active" data-tab="pending-active-issue" >
+                                    <i class="fas fa-clock"></i>
+                                    Pending
+                                </button>
+                                <button class="sidebar-active-issue-btn" data-tab="active-active-issue" >
+                                    <i class="fas fa-cog"></i>
+                                    Active
+                                </button>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select class="filter-select" id="activeIssuesFilter">
+                                    <option value="latest">Latest</option>
+                                    <option value="oldest">Oldest</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="resolved-filter-wrapper">
-                            <select class="resolved-filter-select" id="resolved-sort-filter">
-                                <option value="latest">Latest</option>
-                                <option value="oldest">Oldest</option>
-                            </select>
+
+                        <!-- Pending Active Issues -->
+                        <div id="active-issues-pending" class="sidebar-active-issue-content active">
+                            <div class="issues-list" id="pendingIssuesList"></div>
+                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="btn-load-more-pending-issue" id="loadMorePending-issue" >
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Active Issues -->
+                        <div id="active-issues-active" class="sidebar-active-issue-content">
+                            <div class="issues-list" id="activeIssuesList-issue"></div>
+                            <div class="load-more-container" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="btn-load-more-active-issue" id="loadMoreActive">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
+                            </div>
                         </div>
                     </div>
-                     
-                    
-                    <!-- Live Features -->
-                    <div id="resolved-live" class="resolved-tab-content active">
-                        <div class="resolved-suggestion-list" id="liveSuggestionList">   
-                            <!-- <div class="live-feature-card">
-                                <div class="live-feature-title">Dark Mode Theme Toggle</div>
-                                <div class="live-feature-description">User-requested dark theme implementation for improved eye comfort during extended usage periods</div>
-                                <span class="live-feature-status live-badge-live">
+
+                    <div class="resolved-section">
+                        <h4 class="resolved-section-title">
+                            <i class="fas fa-check-circle"></i>
+                            Resolved & Implemented
+                        </h4>
+                        <div class="tabs-wrapper">
+                            <div class="live-tabs">
+                                <button class="resolved-tab-button active" data-tab="resolved-live">
                                     <i class="fas fa-broadcast-tower"></i>
-                                    Live Production
-                                </span>
-                                <div class="live-feature-meta">
-                                    <span class="live-feature-date">Deployed: Aug 22, 2025</span>
-                                    <span class="live-feature-users">1,247 users activated</span>
-                                </div>
+                                    Live
+                                </button>
+                                <button class="resolved-tab-button" data-tab="resolved-completed">
+                                    <i class="fas fa-check-double"></i>
+                                    Completed
+                                </button>
                             </div>
-                            <div class="live-feature-card">
-                                <div class="live-feature-title">Advanced Conversation History</div>
-                                <div class="live-feature-description">Comprehensive chat export functionality with advanced filtering and search capabilities</div>
-                                <span class="live-feature-status live-badge-live">
-                                    <i class="fas fa-star"></i>
-                                    Live & Featured
-                                </span>
-                                <div class="live-featuresfeature-meta">
-                                    <span class="live-featuresfeature-date">Deployed: Aug 20, 2025</span>
-                                    <span class="live-featuresfeature-users">892 active users</span>
-                                </div>
+                            <div class="resolved-filter-wrapper">
+                                <select class="resolved-filter-select" id="resolved-sort-filter">
+                                    <option value="latest">Latest</option>
+                                    <option value="oldest">Oldest</option>
+                                </select>
                             </div>
-                            <div class="live-feature-card">
-                                <div class="live-feature-title">Database Query Optimization</div>
-                                <div class="live-feature-description">Performance improvements for suggestion search functionality during peak usage hours</div>
-                                <span class="live-feature-status live-badge-live">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                    Live & Optimized
-                                </span>
-                                <div class="live-feature-meta">
-                                    <span class="live-feature-date">Deployed: Aug 17, 2025</span>
-                                    <span class="live-feature-performance">40% faster queries</span>
-                                </div>
-                            </div> -->
-                           
-                        </div> 
-                        <div class="live-load-more-wrapper" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <button class="live-load-more-button" id="loadMoreLive-suggestion">
-                                <i class="fas fa-chevron-down"></i>
-                                Load More
-                            </button>
                         </div>
                         
-                    </div>
-                    
-                    <!-- Completed Features -->
-                    <div id="resolved-completed" class="resolved-tab-content">
-                        <div class="resolved-suggestion-list" id="completedSuggestionList">
-                            <!-- <div class="completed-feature-card">
-                                <div class="completed-feature-title">SSO Integration Module</div>
-                                <div class="completed-feature-description">Enterprise single sign-on authentication with SAML 2.0 and OAuth 2.0 support successfully deployed</div>
-                                <span class="completed-feature-status completed-badge-completed">
-                                    <i class="fas fa-check"></i>
-                                    Fully Completed
-                                </span>
-                                <div class="completed-feature-meta">
-                                    <span class="completed-feature-date">Completed: Aug 14, 2025</span>
-                                    <span class="completed-feature-satisfaction">98% user satisfaction</span>
-                                </div>
+                        
+                        <!-- Live Features -->
+                        <div id="resolved-live" class="resolved-tab-content active">
+                            <div class="resolved-suggestion-list" id="liveSuggestionList"></div> 
+                            <div class="live-load-more-wrapper" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="live-load-more-button" id="loadMoreLive-suggestion">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
                             </div>
-                            <div class="completed-feature-card">
-                                <div class="completed-feature-title">Navigation Menu Redesign</div>
-                                <div class="completed-feature-description">Intuitive navigation restructure with improved accessibility and user experience enhancements</div>
-                                <span class="completed-feature-status completed-badge-completed">
-                                    <i class="fas fa-check-double"></i>
-                                    Design Completed
-                                </span>
-                                <div class="completed-feature-meta">
-                                    <span class="completed-feature-date">Completed: Aug 25, 2025</span>
-                                    <span class="completed-feature-satisfaction">95% user approval</span>
-                                </div>
-                            </div>
-                            <div class="completed-feature-card">
-                                <div class="completed-feature-title">WCAG 2.1 AA Compliance</div>
-                                <div class="completed-feature-description">Comprehensive accessibility improvements including keyboard navigation and screen reader support</div>
-                                <span class="completed-feature-status completed-badge-completed">
-                                    <i class="fas fa-universal-access"></i>
-                                    Accessibility Certified
-                                </span>
-                                <div class="completed-feature-meta">
-                                    <span class="completed-feature-date">Completed: Aug 26, 2025</span>
-                                    <span class="completed-feature-certification">WCAG 2.1 AA Certified</span>
-                                </div>
-                            </div> -->
+                            
                         </div>
-                        <div class="completed-load-more-wrapper" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                            <button class="completed-load-more-button" id="loadMoreCompleted-suggestion">
-                                <i class="fas fa-chevron-down"></i>
-                                Load More
-                            </button>
+                        
+                        <!-- Completed Features -->
+                        <div id="resolved-completed" class="resolved-tab-content">
+                            <div class="resolved-suggestion-list" id="completedSuggestionList"></div>
+                            <div class="completed-load-more-wrapper" style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                                <button class="completed-load-more-button" id="loadMoreCompleted-suggestion">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Load More
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
                 </div>
                 <div class="suggestions-grid">
@@ -459,7 +357,7 @@
                                     <option value="">Select issue type</option>
                                     <option value="system bug">System Bug</option>
                                     <option value="Ui bug">UI Bug</option>
-                                    <option value="documentatoin">Documentation</option>
+                                    <option value="documentation">Documentation</option>
                                     <option value="feature enhancement">Feature Enhancement</option>
                                     <option value="Ui enhancement">UI Enhancement</option>
                                     <option value="help wanted">Help Wanted</option>
@@ -489,10 +387,18 @@
                                 <input type="file" id="suggestionFiles" class="file-input" accept="image/*,.pdf,.txt,.log" multiple>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i>
-                                Submit Report
+                            <button id="submitSuggestionBtn" type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Report
                             </button>
+
+                            <button id="updateSuggestionBtn" type="button" class="btn btn-warning" style="display: none;">
+                                <i class="fas fa-sync-alt"></i> Update Suggestion
+                            </button>
+
+                            <button id="cancelEditSuggestionBtn" type="button" class="btn btn-secondary" style="display: none; margin-left: 12px;">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+
                         </form>
                     </div>
                 </div>

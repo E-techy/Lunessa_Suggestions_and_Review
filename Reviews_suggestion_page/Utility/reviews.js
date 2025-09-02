@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     reviewsTableBody.innerHTML = "";
     reviews.forEach(r => {
         const tr = document.createElement("tr");
-        // const truncated = r.comment.length > 40 ? r.comment.slice(0, 40) + "…" : r.comment;
         const formattedCreatedDate = new Date(r.createdAt).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
@@ -74,16 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         reviewsTableBody.appendChild(tr);
 
-        // Tooltip events
-//         const descDiv = tr.querySelector('.review-description');
-// descDiv.addEventListener('mouseenter', (e) => showTooltip(e.target.dataset.fullText, e.target));
-//         // descDiv.addEventListener('mousemove', (e) => {
-//         //     if (tooltip) {
-//         //         tooltip.style.left = e.pageX + 10 + 'px';
-//         //         tooltip.style.top = e.pageY + 10 + 'px';
-//         //     }
-//         // });
-//         descDiv.addEventListener('mouseleave', hideTooltip);
     });
 
     // Wire edit/delete buttons

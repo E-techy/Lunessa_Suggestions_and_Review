@@ -23,6 +23,16 @@ function switchTab(tabName) {
     // Add active class to clicked button
     event.target.closest('.tab-button').classList.add('active');
 
+    // Show selected tab content
+    const tabContent = document.getElementById(tabName);
+    if (tabContent) tabContent.classList.add('active');
+
+    // Add active class to clicked button
+    if (event) {
+        const btn = event.currentTarget.closest('.tab-button');
+        if (btn) btn.classList.add('active');
+    }
+
     // Add active class to clicked button
     if (event) {
         event.target.closest('.tab-button').classList.add('active');
