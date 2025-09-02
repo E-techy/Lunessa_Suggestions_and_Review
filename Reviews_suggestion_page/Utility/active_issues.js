@@ -43,55 +43,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pendingList = document.getElementById("pendingIssuesList");
   const activeList = document.getElementById("activeIssuesList-issue");
-  const loadMorePending = document.getElementById("loadMorePending-issue");
-  const loadMoreActive = document.getElementById("loadMoreActive");
+  const loadMorePendingBtn = document.getElementById("loadMorePending-issue");
+  const loadMoreActiveBtn = document.getElementById("loadMoreActive");
 
+  const PAGE_SIZE = 3;
   let lastTimestamps = { pending: null, active: null };
 
   console.log("📌 Initializing Active Issues page...");
 
-  fetchSuggestions("pending");
-  fetchSuggestions("active");
+  // =============================
+  // Load More buttons with stable scroll (no jump)
+  // =============================
+  document.querySelector(".btn-load-more-pending-issue")?.addEventListener("click", async () => {
+    await fetchSuggestions("pending", false);
+  });
+
+  document.querySelector(".btn-load-more-active-issue")?.addEventListener("click", async () => {
+    await fetchSuggestions("active", false);
+  });
+
+  // Initial fetch for both tabs
+  fetchSuggestions("pending", true);
+  fetchSuggestions("active", true);
 
   // Tab switching
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      const tab = btn.dataset.tab;
+      const tab = btn.dataset.tab; // "pending-active-issue" | "active-active-issue"
+
       tabButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
       tabContents.forEach(c => c.classList.remove("active"));
       if (tab === "pending-active-issue") {
         document.getElementById("active-issues-pending").classList.add("active");
-      } else if (tab === "active-active-issue") {
+        fetchSuggestions("pending", true);
+      } else {
         document.getElementById("active-issues-active").classList.add("active");
+        fetchSuggestions("active", true);
       }
     });
   });
 
-  // Filter change reloads both tabs
+  // Filter change → reset & reload both
   filterSelect.addEventListener("change", () => {
     lastTimestamps = { pending: null, active: null };
-    pendingList.innerHTML = "";
-    activeList.innerHTML = "";
-    fetchSuggestions("pending");
-    fetchSuggestions("active");
+    fetchSuggestions("pending", true);
+    fetchSuggestions("active", true);
   });
 
-  // Load more buttons
-  loadMorePending.addEventListener("click", () => fetchSuggestions("pending"));
-  loadMoreActive.addEventListener("click", () => fetchSuggestions("active"));
+  // Load More buttons (use your actual IDs)
+  loadMorePendingBtn?.addEventListener("click", () => fetchSuggestions("pending", false));
+  loadMoreActiveBtn?.addEventListener("click", () => fetchSuggestions("active", false));
 
-  // Fetch suggestions from server
-  async function fetchSuggestions(type) {
-    const filterType = filterSelect.value;
-    const timestamp = lastTimestamps[type];
+  // Helpers to get UI elements by type
+  function getUI(type) {
+    return {
+      container: type === "pending" ? pendingList : activeList,
+      btn: type === "pending" ? loadMorePendingBtn : loadMoreActiveBtn,
+    };
+  }
+
+  // Fetch & render
+  async function fetchSuggestions(type, reset = false) {
+    const { container, btn } = getUI(type);
+
+    if (reset) {
+      container.innerHTML = "";
+      lastTimestamps[type] = null;
+      container.style.height = "auto";
+      container.style.maxHeight = "none";
+      container.style.overflowY = "hidden"; // no scroll initially
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Load More";
+        btn.style.display = ""; // ensure visible
+      }
+    }
+
+    const loader = document.createElement("div");
+    loader.className = "loading";
+    loader.textContent = "Loading...";
+    container.appendChild(loader);
 
     try {
       const url = new URL("/active_suggestions", window.location.origin);
-      url.searchParams.set("filterType", filterType);
+      url.searchParams.set("filterType", filterSelect.value);
       url.searchParams.set("suggestionType", type);
-      if (timestamp) url.searchParams.set("timestamp", timestamp);
+      if (lastTimestamps[type]) url.searchParams.set("timestamp", lastTimestamps[type]);
 
       const res = await fetch(url.toString(), {
         method: "POST",
@@ -99,62 +138,100 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json();
-      console.log("📡 Fetched Acive suggestions data:", data);
+      loader.remove();
+
       if (!data.success) throw new Error(data.message || "Failed to fetch");
 
-      renderSuggestions(type, data.suggestions);
-
-      if (data.suggestions.length > 0) {
-        const last = data.suggestions[data.suggestions.length - 1];
-        lastTimestamps[type] = last.createdAt;
+      // Nothing returned → stop
+      if (!data.suggestions || data.suggestions.length === 0) {
+        noMore(type);
+        return;
       }
+
+      // Decide what to render: first PAGE_SIZE on reset, otherwise all returned
+      let toRender = data.suggestions;
+      if (reset) toRender = data.suggestions.slice(0, PAGE_SIZE);
+
+      // Render items
+      toRender.forEach(s => {
+        const statusInfo = window.statusRenderer.getStatusInfo(s.suggestionStatus);
+        const created = new Date(s.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+        const modified = new Date(s.lastModified).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+        const el = document.createElement("div");
+        el.className = "status-item";
+        el.innerHTML = `
+          <div class="status-title">${s.name} - ${s.suggestionCategory}</div>
+          <div class="status-desc">${s.suggestionDescription}</div>
+          <span class="status-badge ${statusInfo.class}" style="color:${statusInfo.color}">
+            <i class="${statusInfo.icon}"></i> ${s.suggestionStatus}
+          </span>
+          <div class="status-meta">
+            <span class="status-date">Created: ${created}</span>
+            <span class="last-modified-date">Last Modified: ${modified}</span>
+          </div>
+          ${
+            s.files && s.files.length
+              ? `<div class="status-files">
+                  ${s.files.map(f => `<a href="${f.url || '#'}" target="_blank">${f.name || 'file'}</a>`).join(", ")}
+                 </div>`
+              : ""
+          }
+        `;
+        container.appendChild(el);
+      });
+
+      // Fix height based on actual number of rendered items (max 3), then enable scroll on later loads
+      if (reset) {
+        fixHeightFromRendered(container);
+        container.style.overflowY = "hidden";
+      } else {
+        container.style.overflowY = "auto"; // scroll after "load more"
+      }
+
+      // Update timestamp using last item we actually rendered
+      const last = toRender[toRender.length - 1];
+      if (last) lastTimestamps[type] = new Date(last.createdAt).toISOString();
+
+      // If server returned fewer than we asked for on non-reset, consider that "no more"
+      if (!reset && data.suggestions.length === 0) noMore(type);
     } catch (err) {
       console.error(`❌ Error fetching ${type} suggestions:`, err);
+      loader.remove();
+      const { container } = getUI(type);
+      if (!container.querySelector(".error")) {
+        container.insertAdjacentHTML("beforeend", `<div class="error">⚠️ Failed to load issues. Please try again.</div>`);
+      }
     }
   }
 
-  // Render suggestion list
-  function renderSuggestions(type, suggestions) {
-    const container = type === "pending" ? pendingList : activeList;
-
-    if (!suggestions || suggestions.length === 0) {
-      if (container.innerHTML === "") {
-        container.innerHTML = `<p class="no-data">No ${type} suggestions found.</p>`;
-      }
-      return;
+  function fixHeightFromRendered(container) {
+    const items = container.querySelectorAll(".status-item");
+    // Sum the first up-to-3 items only (or fewer if not available)
+    let height = 0;
+    for (let i = 0; i < Math.min(items.length, 3); i++) {
+      const item = items[i];
+      const style = window.getComputedStyle(item);
+      const mt = parseFloat(style.marginTop) || 0;
+      const mb = parseFloat(style.marginBottom) || 0;
+      height += item.offsetHeight + mt + mb;
     }
-
-    suggestions.forEach(s => {
-      const statusInfo = window.statusRenderer.getStatusInfo(s.suggestionStatus);
-
-      const item = document.createElement("div");
-      const formattedcreatedDate = new Date(s.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-      const formattedlastdDate = new Date(s.lastModified).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric'
-          });
-      item.className = "status-item";
-      item.innerHTML = `
-        <div class="status-title">${s.name} - ${s.suggestionCategory}</div>
-        <div class="status-desc">${s.suggestionDescription}</div>
-        <span class="status-badge ${statusInfo.class}" style="color:${statusInfo.color}">
-          <i class="${statusInfo.icon}"></i> ${s.suggestionStatus}
-        </span>
-        <div class="status-meta">
-          <span class="status-date">Created: ${formattedcreatedDate}</span>
-          <span class="last-modified-date">Last Modified: ${formattedlastdDate}</span>
-        </div>
-        ${s.files && s.files.length > 0 ? `
-          <div class="status-files">
-            ${s.files.map(f => `<a href="${f.url || '#'}" target="_blank">${f.name || 'file'}</a>`).join(", ")}
-          </div>` : ""}
-      `;
-      container.appendChild(item);
+    requestAnimationFrame(() => {
+      container.style.height = `${height}px`;
+      container.style.maxHeight = `${height}px`;
     });
   }
+
+  function noMore(type) {
+    const { btn, container } = getUI(type);
+    if (!container.querySelector(".no-more")) {
+      container.insertAdjacentHTML("beforeend", `<div class="no-more"></div>`);
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "No more issues";
+    }
+  }
 });
+
+
