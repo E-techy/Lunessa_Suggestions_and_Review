@@ -132,8 +132,8 @@
 } */
 
 /* Load More Container */
-.load-more-container 
-,.live-load-more-wrapper
+.load-more-container ,
+.live-load-more-wrapper
 ,.completed-load-more-wrapper{
     text-align: center;
     margin-top: 16px;

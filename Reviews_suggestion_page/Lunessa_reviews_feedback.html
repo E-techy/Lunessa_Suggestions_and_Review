@@ -327,11 +327,11 @@
                     </h4>
                     <div class="tabs-wrapper">
                         <div class="live-tabs">
-                            <button class="resolved-tab-button active" data-tab="live-features">
+                            <button class="resolved-tab-button active" data-tab="resolved-live">
                                 <i class="fas fa-broadcast-tower"></i>
                                 Live
                             </button>
-                            <button class="resolved-tab-button" data-tab="completed-features">
+                            <button class="resolved-tab-button" data-tab="resolved-completed">
                                 <i class="fas fa-check-double"></i>
                                 Completed
                             </button>
@@ -346,7 +346,7 @@
                      
                     
                     <!-- Live Features -->
-                    <div id="live-features" class="resolved-tab-content active">
+                    <div id="resolved-live" class="resolved-tab-content active">
                         <div class="resolved-suggestion-list" id="liveSuggestionList">   
                             <!-- <div class="live-feature-card">
                                 <div class="live-feature-title">Dark Mode Theme Toggle</div>
@@ -396,7 +396,7 @@
                     </div>
                     
                     <!-- Completed Features -->
-                    <div id="completed-features" class="resolved-tab-content">
+                    <div id="resolved-completed" class="resolved-tab-content">
                         <div class="resolved-suggestion-list" id="completedSuggestionList">
                             <!-- <div class="completed-feature-card">
                                 <div class="completed-feature-title">SSO Integration Module</div>
@@ -584,32 +584,6 @@
     <script type="module" src="./Utility/normalReviews.js"></script>
     <script type="module" src="./Utility/suggestions.js"></script>
     <script type="module" src="./Utility/active_issues.js"></script>
-    <script type="module" src="./Utility/live_suggestions.js"></script>
-    <script type="module" src="./Utility/completed_suggestions.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-  const tabButtons = document.querySelectorAll(".resolved-tab-button");
-  const tabContents = document.querySelectorAll(".resolved-tab-content");
-
-  tabButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      const targetTab = button.dataset.tab;
-
-      // 1️⃣ Remove 'active' from all buttons and add to clicked one
-      tabButtons.forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
-
-      // 2️⃣ Hide all tab contents and show target
-      tabContents.forEach(content => {
-        if (content.id === targetTab) {
-          content.classList.add("active");
-        } else {
-          content.classList.remove("active");
-        }
-      });
-    });
-  });
-});
-    </script>
+    <script type="module" src="./Utility/resolved.js"></script>
 </body>
 </html>
