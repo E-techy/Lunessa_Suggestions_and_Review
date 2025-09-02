@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadReviews(type = "latest", reset = false) {
     const tabContainer = document.getElementById(`top-rated-${type}`);
-    const container = tabContainer.querySelector(".reviews-list"); // <- use reviews-list
-    const btn = tabContainer.querySelector(".btn-load-more"); // <- use button inside tab
+    const container = tabContainer.querySelector(".reviews-list");
+    const btn = tabContainer.querySelector(".btn-load-more");
 
     if (reset) {
         container.innerHTML = "";
@@ -64,9 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Determine how many reviews to render
       let reviewsToRender = data.data;
-      if (reset) reviewsToRender = data.data.slice(0, PAGE_SIZE);
+      if (reset) {
+        // For initial load, only show PAGE_SIZE reviews
+        reviewsToRender = data.data.slice(0, PAGE_SIZE);
+      }
 
-      // Render reviews
+      // Render reviews - FIXED: Use "beforeend" to maintain correct order
       reviewsToRender.forEach(r => {
         const stars = "★".repeat(r.ratingStar) + "☆".repeat(5 - r.ratingStar);
         const formattedDate = new Date(r.createdAt).toLocaleDateString("en-US", {
@@ -82,15 +85,16 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="review-date">${formattedDate}</div>
           </div>
         `;
-        container.insertAdjacentHTML("afterbegin", html);
+        // FIXED: Use "beforeend" instead of "afterbegin" to maintain order
+        container.insertAdjacentHTML("beforeend", html);
       });
 
-      // First fetch: set height to fit 3 reviews, no scroll
+      // First fetch: set height to fit PAGE_SIZE reviews, no scroll
       if (reset) {
-        const firstThree = container.querySelectorAll(".review-item");
+        const reviewItems = container.querySelectorAll(".review-item");
         let height = 0;
 
-        firstThree.forEach(item => {
+        reviewItems.forEach(item => {
           const style = window.getComputedStyle(item);
           const marginTop = parseFloat(style.marginTop);
           const marginBottom = parseFloat(style.marginBottom);
@@ -102,16 +106,31 @@ document.addEventListener("DOMContentLoaded", () => {
           container.style.maxHeight = `${height}px`;
           container.style.overflowY = "hidden";
         });
+        
+        // FIXED: Update timestamp with the last review from ALL data, not just rendered
+        if (data.data.length > 0) {
+          const lastReview = data.data[data.data.length - 1];
+          lastTimestamps[type] = new Date(lastReview.createdAt).toISOString();
+        }
       } else {
-        // On Load More: enable scroll
+        // On Load More: enable scroll and update timestamp
         container.style.overflowY = "auto";
+        
+        // FIXED: Update timestamp with the last review from rendered data
+        if (reviewsToRender.length > 0) {
+          const lastReview = reviewsToRender[reviewsToRender.length - 1];
+          lastTimestamps[type] = new Date(lastReview.createdAt).toISOString();
+        }
       }
 
-      // Update last timestamp
-      const lastReview = reviewsToRender[reviewsToRender.length - 1];
-      if (lastReview) {
-        lastTimestamps[type] = new Date(lastReview.createdAt).toISOString();
+      // FIXED: Hide Load More button if we've shown all available data
+      if (reset && data.data.length <= PAGE_SIZE) {
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "No more reviews";
+        }
       }
+
     } catch (err) {
       console.error("❌ Error loading top reviews:", err);
       loader.remove();
@@ -128,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".btn-load-more").forEach(btn => {
     btn.addEventListener("click", async () => {
       const type = btn.dataset.type;
-      // bas direct load call karo, scrollTop adjust mat karo
       await loadReviews(type, false);
     });
   });
