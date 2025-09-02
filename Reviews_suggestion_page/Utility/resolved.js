@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function noMore(type) {
     const { btn, container } = getUI(type);
     if (!container.querySelector(".no-more")) {
-      container.insertAdjacentHTML("beforeend", `<div class="no-more">No more ${type} suggestions</div>`);
+      container.insertAdjacentHTML("beforeend", `<div class="no-more"></div>`);
     }
     if (btn) {
       btn.disabled = true;
