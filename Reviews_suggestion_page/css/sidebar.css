@@ -502,4 +502,6 @@
 .scroll-enabled {
   overflow-y: auto;
 }
-
+.reviews-list {
+    transition: height 0.3s ease;
+}

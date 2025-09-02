@@ -6,6 +6,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateBtn = document.getElementById("updateReviewBtn");
   const cancelBtn = document.getElementById("cancelEditBtn");
   const reviewsTableBody = document.querySelector(".reviews-table tbody");
+  updateBtn.addEventListener("click", async () => {
+    if (!editingReviewID) return;
+    const comment = commentField.value;
+
+    // Show loading state
+    const originalHTML = updateBtn.innerHTML;
+    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    updateBtn.disabled = true;
+    updateBtn.classList.add('loading');
+
+    try {
+        const res = await fetch("/review?action=modify", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reviewID: editingReviewID, comment, ratingStar: currentRating, files: [] })
+        });
+
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        cancelBtn.click();
+        loadReviews();
+    } catch (err) {
+    } finally {
+        // Restore button
+        updateBtn.innerHTML = originalHTML;
+        updateBtn.disabled = false;
+        updateBtn.classList.remove('loading');
+    }
+});
 
   let currentRating = 0;
   let editingReviewID = null;
@@ -93,13 +124,20 @@ document.addEventListener("DOMContentLoaded", () => {
     commentField.value = review.comment;
     currentRating = review.ratingStar;
     document.querySelectorAll("#reviewRating .star").forEach(s => {
-      s.style.color = parseInt(s.dataset.rating) <= currentRating ? "#FFD700" : "#ccc";
+        s.style.color = parseInt(s.dataset.rating) <= currentRating ? "#FFD700" : "#ccc";
     });
 
     submitBtn.style.display = "none";
     updateBtn.style.display = "inline-block";
     cancelBtn.style.display = "inline-block";
+
+    // Scroll form into view with offset (e.g., 100px from top)
+    const rect = form.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const offset = 100; // adjust this for your title/header height
+    window.scrollTo({ top: rect.top + scrollTop - offset, behavior: "smooth" });
   }
+
 
   cancelBtn.addEventListener("click", () => {
     form.reset();

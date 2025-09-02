@@ -263,9 +263,13 @@ document.addEventListener("DOMContentLoaded", () => {
         updateBtn.style.display = "inline-block";
         cancelBtn.style.display = "inline-block";
 
-        // Scroll the form into view smoothly
-        form.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Scroll the form into view with offset (e.g., 100px below title/header)
+        const rect = form.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100; // adjust this value to fit your header/title height
+        window.scrollTo({ top: rect.top + scrollTop - offset, behavior: "smooth" });
     };
+
 
 
     // Delete suggestion
