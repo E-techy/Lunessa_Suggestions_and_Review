@@ -484,3 +484,24 @@
     border-radius: 4px;
     display: inline-block;
 }
+.normal-reviews-list {
+  overflow-y: hidden; /* initially no scroll */
+  padding-right: 6px;
+  transition: none;
+}
+
+/* Suggestion List Containers */
+#liveSuggestionList,
+#completedSuggestionList {
+  max-height: 600px;   /* adjust depending on your card height × 3 */
+  overflow-y: hidden;  /* hide scroll initially */
+  transition: all 0.3s ease;
+}
+
+/* When more than 3 items, enable scroll */
+.scroll-enabled {
+  overflow-y: auto;
+}
+.reviews-list {
+    transition: height 0.3s ease;
+}

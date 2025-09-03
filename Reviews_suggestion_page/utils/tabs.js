@@ -22,6 +22,30 @@ function switchTab(tabName) {
 
     // Add active class to clicked button
     event.target.closest('.tab-button').classList.add('active');
+
+    // Show selected tab content
+    const tabContent = document.getElementById(tabName);
+    if (tabContent) tabContent.classList.add('active');
+
+    // Add active class to clicked button
+    if (event) {
+        const btn = event.currentTarget.closest('.tab-button');
+        if (btn) btn.classList.add('active');
+    }
+
+    // Add active class to clicked button
+    if (event) {
+        event.target.closest('.tab-button').classList.add('active');
+    }
+
+    // ✅ Auto-click sub-tabs when Suggestions is opened
+    if (tabName === "suggestions") {
+        const pendingBtn = document.querySelector(".sidebar-active-issue-btn[data-tab='pending-active-issue']");
+        const liveBtn = document.querySelector(".resolved-tab-button[data-tab='resolved-live']");
+
+        if (pendingBtn) pendingBtn.click();
+        if (liveBtn) liveBtn.click();
+    }
 }
 
 // Sidebar tab switching functionality
@@ -63,30 +87,6 @@ function switchSidebarTab(sectionName, tabType) {
     }
 }
 
-// Filter functionality for Active Issues section
-// function filterActiveIssues(filterValue) {
-//     const pendingItems = document.querySelectorAll('#active-issues-pending .status-item');
-//     const activeItems = document.querySelectorAll('#active-issues-active .status-item');
-    
-//     // Sort pending items
-//     sortStatusItems(pendingItems, filterValue);
-//     // Sort active items
-//     sortStatusItems(activeItems, filterValue);
-// }
-
-// // Filter functionality for Resolved & Implemented section
-// function filterResolvedImplemented(filterValue) {
-//     const liveItems = document.querySelectorAll('#resolved-implemented-live .status-item');
-//     const completedItems = document.querySelectorAll('#resolved-implemented-completed .status-item');
-    
-//     // Sort live items
-//     sortStatusItems(liveItems, filterValue);
-//     // Sort completed items
-//     sortStatusItems(completedItems, filterValue);
-// }
-
-// Helper function to sort status items by date
-// x
 
 // Extract date from status item
 function extractDateFromStatusItem(item) {
@@ -109,25 +109,7 @@ function extractDateFromStatusItem(item) {
     return new Date(0);
 }
 
-// Initialize filters on page load
-// document.addEventListener('DOMContentLoaded', function() {
-//     // Set initial filter values
-//     const activeIssuesFilter = document.getElementById('activeIssuesFilter');
-//     const resolvedImplementedFilter = document.getElementById('resolvedImplementedFilter');
-    
-//     if (activeIssuesFilter) {
-//         activeIssuesFilter.value = 'latest';
-//         filterActiveIssues('latest');
-//     }
-    
-//     if (resolvedImplementedFilter) {
-//         resolvedImplementedFilter.value = 'latest';
-//         filterResolvedImplemented('latest');
-//     }
-// });
 
 // Make functions available globally
 window.switchTab = switchTab;
 window.switchSidebarTab = switchSidebarTab;
-// window.filterActiveIssues = filterActiveIssues;
-// window.filterResolvedImplemented = filterResolvedImplemented;
